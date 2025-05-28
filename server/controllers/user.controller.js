@@ -5,6 +5,8 @@ import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
 import { generateRefreshToken } from '../utils/generateRefreshToken.js';
 import { generateAccessToken } from '../utils/generateAccessToken.js';
 
+//Register Controller
+
 export async function registerUserController(req, res) {
     try {
         const {name, email, password} = req.body;

@@ -3,7 +3,7 @@ import { UserModel } from "../models/user.model.js";
 
 
 export const generateRefreshToken = async (userId) => {
-    const refresh_token = await jwt.sign(
+    const refresh_token = jwt.sign(
         {id : userId},
         process.env.REFRESH_TOKEN_SECRET_KEY,
         {expiresIn : '7d'}

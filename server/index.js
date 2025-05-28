@@ -32,6 +32,7 @@ app.get("/", (req, res) => {
 })
 
 app.use('/api/user', userRouter)
+console.log("Secret:", process.env.ACCESS_TOKEN_SECRET_KEY);
 
 connectDB().then(() => {
     app.listen(port, () => {

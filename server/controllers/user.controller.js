@@ -164,3 +164,35 @@ export async function loginController(req, res) {
     }
 
 }
+
+// Logout Controller
+
+export async function logoutController(req, res) {
+    try {
+        const userId = req.userId // from middleware
+        const cookiesOption = {
+            httpOnly : true,
+            secure : true,
+            sameSite : "None"
+        }
+
+        res.clearCookie("accessToken", cookiesOption)
+        res.clearCookie("refreshToken", cookiesOption)
+
+        const removeRefreshToken = await UserModel.findByIdAndUpdate(userId, {
+            refresh_Token : ""
+        })
+
+        return res.json({
+            message : "User logout successfully",
+            error : false,
+            success : true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}

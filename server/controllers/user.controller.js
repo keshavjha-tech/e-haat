@@ -198,3 +198,18 @@ export async function logoutController(req, res) {
         })
     }
 }
+
+//upolad user Avatar
+
+export async function uploadAvatar(req, res) {
+    try {
+        
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+        
+    }
+}

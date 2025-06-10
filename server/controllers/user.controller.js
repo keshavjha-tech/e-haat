@@ -4,6 +4,7 @@ import bcryptjs from 'bcryptjs'
 import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
 import { generateRefreshToken } from '../utils/generateRefreshToken.js';
 import { generateAccessToken } from '../utils/generateAccessToken.js';
+import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 //Register Controller
 
@@ -203,7 +204,22 @@ export async function logoutController(req, res) {
 
 export async function uploadAvatar(req, res) {
     try {
+        const userId = req.userId //from auth middleware
+        const image = req.file // from multer middleware
+
+        const upload = await uploadOnCloudinary(image)
         
+        const updateUser = await UserModel.findByIdAndUpdate(userId, {
+            avatar : upload.url
+        })
+
+        return res.json({
+            message : "Profile Pic updated",
+            data : {
+                _id : userId,
+                avatar : upload.url
+            }
+        })
     } catch (error) {
         return res.status(500).json({
             message : error.message || error,

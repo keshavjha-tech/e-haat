@@ -16,5 +16,5 @@ export const uploadOnCloudinary = async(image) => {
         }).end(buffer)
     })
 
-    return uploadOnCloudinary
+    return uploadImg
 }

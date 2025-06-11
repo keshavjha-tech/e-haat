@@ -68,9 +68,29 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         type : String,
-        enum : ['USER', 'ADMIN'],
+        enum : ['USER', 'SELLER', 'ADMIN'],
         default : "USER"
-    }
+    },
+
+    // Seller specific
+  
+    store_name: {
+        type: String, 
+        default: null 
+    },
+    store_description: { 
+        type: String, 
+        default: null 
+        
+    },
+    isSellerVerified: { 
+        type: Boolean, 
+        default: false 
+        
+    },
+    products_listed: [{ 
+        type: mongoose.Schema.ObjectId, 
+        ref: 'Product' }],
 }, {timestamps : true})
 
 export const UserModel = mongoose.model("User", userSchema)

@@ -5,6 +5,8 @@ import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
 import { generateRefreshToken } from '../utils/generateRefreshToken.js';
 import { generateAccessToken } from '../utils/generateAccessToken.js';
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
+import { generateOTP } from '../utils/generateOTP.js';
+import { resetPasswordTemplate } from '../utils/resetPasswordTemplate.js';
 
 //Register Controller
 
@@ -229,3 +231,93 @@ export async function uploadAvatar(req, res) {
         
     }
 }
+
+// Update user details
+
+export async function updateUserDetails(req, res) {
+    try {
+        const userId = req.userId
+        const{name, email, mobile, password, avatar } = req.body
+
+        let hashedPassword = ""
+        if(password){
+            const salt = await bcryptjs.genSalt(10)
+            hashedPassword = await bcryptjs.hash(password, salt)
+        }
+
+        const updateUser = await UserModel.updateOne({ _id : userId}, {
+            ...(name && {name : name}),
+            ...(email && {email : email}),
+            ...(mobile && {mobile : mobile}),
+            ...(password && {password : hashedPassword}),
+            ...(avatar && {avatar : avatar}),
+        })
+
+        return res.status(200).json({
+            message : "User updated",
+            error: false,
+            success: true,
+            data : updateUser
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}
+
+// Forgot password
+
+export async function forgotPasswordController(req, res) {
+    try {
+        const {email} = req.body
+
+        const user = await UserModel.findOne({ email })
+
+        if(!user){
+            return res.status(404).json({
+                message : "User not found",
+                error : true,
+                success : false
+            })
+        }
+
+        const otp = generateOTP();
+        const expireOtp = new Date(Date.now() + 5 * 60 * 1000);
+
+        const update = await UserModel.findByIdAndUpdate(user._id, {
+            forget_password_otp : otp,
+            forget_password_expiry: expireOtp
+        })
+
+        await sendEmail({
+            sendTo : email,
+            subject : "Reset Password",
+            html : resetPasswordTemplate({
+                name : user.name,
+                otp : otp
+            })
+        })
+
+        return res.json({
+            message : "OTP sent to email",
+            error : false,
+            success : true
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error : true,
+            success : false
+        })
+    }
+}
+
+// verify
+

@@ -1,8 +1,12 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Layout from './components/Layout'
 
 function App() {
   return (
-    <div className='text-5xl underline italic font-bold'>E-Haat</div>
+    <>
+     <Layout />
+    </>
   )
 }
 

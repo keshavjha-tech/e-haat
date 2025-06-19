@@ -7,7 +7,7 @@ function Layout() {
     return (
         <>
             <Header />
-            <main>
+            <main className='min-h-[100vh]'>
                 <Outlet />
             </main>
             <Footer />

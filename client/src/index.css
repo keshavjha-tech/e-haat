@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
+
 @theme{
-  --color-primary : '#ffbg00';
- --color-primary-light : "#ffc929";
- --color-secondary : "#00b050";
- --color-seconadry-light : "#0b1a78"
+  --color-primary : #ffbf00;
+ --color-primary-light : #ffc929;
+ --color-secondary : #00b050;
+ --color-seconadry-light : #0b1a78;
+ --color-mint-500: oklch(0.72 0.11 178);
   
 }

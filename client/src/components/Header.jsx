@@ -20,7 +20,7 @@ function Header() {
   // console.log('ismobile', isMobile);
   // console.log("isSearchPage", isSearchPage);
   return (
-    <header className="h-24 lg:h-20 lg:shadow-md sticky top-0 z-40 items-center flex  flex-col gap-2 justify-center">
+    <header className="h-24 lg:h-20 lg:shadow-md sticky top-0 z-40 items-center flex  flex-col gap-2 justify-center bg-white">
       {!(isSearchPage && isMobile) && (
         <div className="container mx-auto flex items-center justify-around px-4 ">
           {/* {Logo} */}

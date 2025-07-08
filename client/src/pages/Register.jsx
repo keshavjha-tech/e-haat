@@ -9,20 +9,20 @@ function Register() {
     confirmPassword: "",
   });
 
-   const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
   // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [visibility, setVisibility] = useState({
-  password: false,
-  confirmPassword: false,
-});
+    password: false,
+    confirmPassword: false,
+  });
 
-const toggleVisibility = (show) => {
-  setVisibility((prev) => ({
-    ...prev,
-    [show]: !prev[show],
-  }));
-};
+  const toggleVisibility = (show) => {
+    setVisibility((prev) => ({
+      ...prev,
+      [show]: !prev[show],
+    }));
+  };
 
   const changeHandler = (e) => {
     const { name, value } = e.target;
@@ -35,14 +35,22 @@ const toggleVisibility = (show) => {
     });
   };
 
+  const submitHandler = (e) =>{
+   e.preventDefault();
+
+   if(password !== confirmPassword){
+    
+   }
+  }
+
   return (
-    <section className="container w-full mx-auto px-4 items-center">
+    <section className="container w-full mx-auto px-4 items-center ">
       <div className="bg-Sapphire-Blue my-5 w-full max-w-lg mx-auto rounded-2xl p-4">
-        <p className="text-white flex items-center justify-center text-xl font-semibold">
-          SIGNUP
+        <p className="text-white flex items-center justify-center mt-10 text-2xl font-bold">
+          Create Account!
         </p>
 
-        <form action="" className="mt-6 grid gap-4 text-lg">
+        <form onSubmit={submitHandler} className="mt-6 grid gap-4 text-lg">
           {/* Name */}
           <div className="grid gap-2">
             <label htmlFor="name" className="text-white font-bold ml-4">
@@ -56,6 +64,7 @@ const toggleVisibility = (show) => {
               name="name"
               value={formData.name}
               onChange={changeHandler}
+              placeholder="Enter Your Name"
             />
           </div>
 
@@ -71,6 +80,7 @@ const toggleVisibility = (show) => {
               name="email"
               value={formData.email}
               onChange={changeHandler}
+              placeholder="Enter Your Email"
             />
           </div>
 
@@ -83,10 +93,11 @@ const toggleVisibility = (show) => {
               <input
                 type={visibility.password ? "text" : "password"}
                 id="password"
-                className="rounded-full py-2 px-4 focus:outline-none"
+                className="rounded-full w-full py-2 px-4 focus:outline-none"
                 name="password"
                 value={formData.password}
                 onChange={changeHandler}
+                placeholder="Enter Your Password"
               />
               <button
                 type="button"
@@ -111,17 +122,19 @@ const toggleVisibility = (show) => {
               Confirm Password
             </label>
             <div className="relative bg-linen rounded-full mx-5 focus:outline-none">
-             <input
-              type={visibility.confirmPassword ? "text" : "password"}
-              id="confirmPassword"
-              className="bg-linen rounded-full py-2 px-4 mx-5 focus:outline-none"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={changeHandler} />
+              <input
+                type={visibility.confirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                className="bg-linen rounded-full w-full py-2 px-4  focus:outline-none"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={changeHandler}
+                placeholder="Confirm Password"
+              />
 
               <button
                 type="button"
-                  onClick={() => toggleVisibility("confirmPassword")}
+                onClick={() => toggleVisibility("confirmPassword")}
                 className="absolute inset-y-0 right-3 flex items-center text-Sapphire-Blue"
               >
                 {visibility.confirmPassword ? (
@@ -132,6 +145,10 @@ const toggleVisibility = (show) => {
               </button>
             </div>
           </div>
+
+          <button className="border rounded-full bg-sand py-3 font-semibold my-8  text-black mb-10 tracking-wider">
+            Create Account
+          </button>
         </form>
       </div>
     </section>

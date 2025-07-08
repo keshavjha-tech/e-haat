@@ -4,10 +4,11 @@ body{ @apply bg-blue-50}
 
 
 @theme{
-  --color-primary : #ffbf00;
- --color-primary-light : #ffc929;
- --color-secondary : #00b050;
- --color-seconadry-light : #0b1a78;
- --color-mint-500: oklch(0.72 0.11 178);
-  
+  --color-light-gray: #F5F5F5;
+  --color-Sapphire-Blue: #102C57;
+  --color-linen: #F8F0E5;
+
+
+  /* --font-jockey: Jolly-Lodger, sana-sarif; */
+   
 }

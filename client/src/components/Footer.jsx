@@ -3,13 +3,13 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-
 
 function Footer() {
   return (
-    <footer className="border-t py-10">
+    <footer className="border-t py-10 bg-Sapphire-Blue text-linen">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
 
           {/* Logo & Info */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-800">e-haat</h1>
+            <h1 className="text-2xl font-bold text-linen">e-haat</h1>
             <p className=" text-sm">Copyright © 2025 </p>
             <p className=" text-sm">E-Haat Group </p>
             <p className=" text-sm">Created by Keshav Jha</p>
@@ -17,7 +17,7 @@ function Footer() {
 
           {/* Product */}
           <div className="space-y-2">
-            <h3 className="font-semibold uppercase text-gray-900 text-sm">Product</h3>
+            <h3 className="font-semibold uppercase text-sm">Product</h3>
             <ul className="space-y-1 ">
               <li><a href="#" className="hover:underline">Feature 1</a></li>
               <li><a href="#" className="hover:underline">Feature 2</a></li>
@@ -36,7 +36,7 @@ function Footer() {
           {/* Help */}
           <div className="space-y-2">
             <h3 className="font-semibold uppercase  text-sm">Help</h3>
-            <ul className="space-y-1 text-gray-700">
+            <ul className="space-y-1 ">
               <li><a href="#" className="hover:underline">Contact</a></li>
               <li><a href="#" className="hover:underline">Support</a></li>
             </ul>

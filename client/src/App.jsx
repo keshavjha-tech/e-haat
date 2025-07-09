@@ -1,11 +1,11 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
 import Layout from './components/Layout'
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <>
      <Layout />
+     <Toaster />
     </>
   )
 }

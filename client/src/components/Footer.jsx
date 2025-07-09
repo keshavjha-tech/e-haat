@@ -9,7 +9,7 @@ function Footer() {
 
           {/* Logo & Info */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-linen">e-haat</h1>
+            <h1 className="text-3xl font-bold text-sand">e-haat</h1>
             <p className=" text-sm">Copyright © 2025 </p>
             <p className=" text-sm">E-Haat Group </p>
             <p className=" text-sm">Created by Keshav Jha</p>

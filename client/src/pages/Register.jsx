@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import {Link, NavLink, useNavigate} from "react-router-dom"
+import toast from "react-hot-toast";
+import Axios from "../utils/Axios";
+import summaryApi from "../utils/summaryApi";
+import AxiosToastError from "../utils/AxiosToastError";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -8,9 +13,10 @@ function Register() {
     password: "",
     confirmPassword: "",
   });
-
+  
   // const [showPassword, setShowPassword] = useState(false);
   // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const [visibility, setVisibility] = useState({
     password: false,
@@ -35,17 +41,46 @@ function Register() {
     });
   };
 
-  const submitHandler = (e) =>{
-   e.preventDefault();
+  const allFieldsFilled = Object.values(formData).every((item) => item);
+  const passwordsMatch = formData.password === formData.confirmPassword;
 
-   if(password !== confirmPassword){
-    
-   }
-  }
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    if (!passwordsMatch) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await Axios({
+        ...summaryApi.register,
+        data: formData,
+      });
+
+      if (response.data.error) {
+        toast.error(response.data.message);
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: ""
+        });
+        navigate('/login')
+      }
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+      }
+      console.log("response", response);
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
 
   return (
-    <section className="container w-full mx-auto px-4 items-center ">
-      <div className="bg-Sapphire-Blue my-5 w-full max-w-lg mx-auto rounded-2xl p-4">
+    <section className="container w-full mx-auto px-4 items-center mt-23  ">
+      <div className="bg-Sapphire-Blue my-5 w-full max-w-lg mx-auto rounded-2xl p-4 ">
         <p className="text-white flex items-center justify-center mt-10 text-2xl font-bold">
           Create Account!
         </p>
@@ -146,10 +181,22 @@ function Register() {
             </div>
           </div>
 
-          <button className="border rounded-full bg-sand py-3 font-semibold my-8  text-black mb-10 tracking-wider">
+          <button
+            disabled={!allFieldsFilled}
+            className={`border rounded-full py-3 font-semibold mt-8  tracking-wider cursor-pointer active:scale-95 active:shadow-inner transition-transform duration-100 ease-in-out
+                ${
+                  allFieldsFilled
+                    ? "bg-sand text-black"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+          >
             Create Account
           </button>
         </form>
+        <p className="text-linen mt-2 mb-10 mx-30">
+          Already have an account? <NavLink to={"/login"}>
+          <span className="text-sand font-bold underline">Login</span></NavLink>
+        </p>
       </div>
     </section>
   );

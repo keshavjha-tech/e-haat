@@ -183,7 +183,7 @@ function RegisterPage() {
 
           <button
             disabled={!allFieldsFilled}
-            className={`border rounded-full py-3 font-semibold mt-8  tracking-wider cursor-pointer active:scale-95 active:shadow-inner transition-transform duration-100 ease-in-out
+            className={`border rounded-full py-2.5 mx-7  font-semibold mt-8  tracking-wide cursor-pointer active:scale-95 active:shadow-inner transition-transform duration-100 ease-in-out
                 ${
                   allFieldsFilled
                     ? "bg-sand text-black"

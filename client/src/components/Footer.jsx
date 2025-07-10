@@ -3,7 +3,7 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-
 
 function Footer() {
   return (
-    <footer className="border-t py-10 bg-Sapphire-Blue text-linen">
+    <footer className="border-t py-10 bg-charcol-navy text-linen">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
 

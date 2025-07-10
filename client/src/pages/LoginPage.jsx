@@ -67,7 +67,7 @@ function LoginPage() {
   };
 
   return (
-    <section className="container w-full mx-auto px-4 items-center mt-23 font-jockey ">
+    <section className="container w-full mx-auto px-4 items-center mt-23  ">
       <div className="bg-Sapphire-Blue my-5 w-full max-w-lg mx-auto rounded-2xl p-4 ">
         <p className="text-white flex items-center ml-4 mt-10 text-3xl font-jockey font-bold">
           Welcome Back!
@@ -120,11 +120,12 @@ function LoginPage() {
                 )}
               </button>
             </div>
+            <Link to={"/forgot-password"} className="text-linen ml-auto mr-3 px-2 py-1 text-sm">Forget Passowrd?</Link>
           </div>
 
           <button
             disabled={!allFieldsFilled}
-            className={`border rounded-full py-3 font-semibold mt-8  tracking-wider cursor-pointer active:scale-95 active:shadow-inner transition-transform duration-100 ease-in-out
+            className={`border rounded-full py-2.5 font-semibold mt-4 mx-7  tracking-wider cursor-pointer active:scale-95 active:shadow-inner transition-transform duration-100 ease-in-out
                 ${
                   allFieldsFilled
                     ? "bg-sand text-black"

@@ -38,7 +38,7 @@ function SearchBar() {
       </div>
 
       {!isSearchPage ? (
-        <div onClick={redirectToSearchPage} className="w-full h-full mt-3">
+        <div onClick={redirectToSearchPage} className="w-full h-full mt-3 sm:mt-0">
           <TypeAnimation
             sequence={[
               // Same substring at the start will only be typed out once, initially
@@ -54,6 +54,7 @@ function SearchBar() {
             wrapper="span"
             speed={50}
             repeat={Infinity}
+            className="p"
           />
         </div>
       ) : (

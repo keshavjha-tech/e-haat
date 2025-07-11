@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import { HiEye, HiEyeOff } from "react-icons/hi";
+import summaryApi from "../utils/summaryApi";
+import AxiosToastError from "../utils/AxiosToastError";
+import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
 
 
 function ResetPasswordPage() {
@@ -8,8 +12,8 @@ function ResetPasswordPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
-    newpassword: "",
-    confirmNewPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -28,7 +32,7 @@ function ResetPasswordPage() {
 
     const [visibility, setVisibility] = useState({
       newPassword: false,
-      confirmNewPassword: false,
+      confirmPassword: false,
     });
   
     const toggleVisibility = (show) => {
@@ -49,8 +53,8 @@ function ResetPasswordPage() {
       });
     };
 
-  const allFieldsFilled = Object.values(formData).every((item) => item);
-  const passwordsMatch = formData.newpassword === formData.confirmNewPassword;
+  const allFieldsFilled = formData.newPassword && formData.confirmPassword;
+  const passwordsMatch = formData.newPassword === formData.confirmPassword;
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -72,23 +76,23 @@ function ResetPasswordPage() {
 
       if (response.data.success) {
         toast.success(response.data.message);
+        navigate('/login')
         setFormData({
-          name: "",
           email: "",
-          password: "",
+          newPassword: "",
           confirmPassword: ""
         });
-        navigate('/login')
       }
-      // console.log("response", response);
+      console.log("response", response);
     } catch (error) {
       AxiosToastError(error);
     }
   };
+  
 
 
   return (
-     <section className="container w-full mx-auto px-4 items-center mt-23  ">
+     <section className="container w-full mx-auto px-4 items-center mt-24  ">
       <div className="bg-Sapphire-Blue my-5 w-full max-w-lg mx-auto rounded-2xl p-4 ">
         <p className="text-white flex items-center justify-center mt-10 text-2xl font-bold">
           Reset Password!
@@ -103,11 +107,12 @@ function ResetPasswordPage() {
             <input
               type="email"
               id="email"
-              className="bg-linen rounded-full py-2 px-4 mx-5 focus:outline-none"
               name="email"
               value={formData.email}
               onChange={changeHandler}
+              readOnly
               placeholder="Enter Your Email"
+              className="bg-linen rounded-full py-2 px-4 mx-5 focus:outline-none"
             />
           </div>
 
@@ -118,20 +123,20 @@ function ResetPasswordPage() {
             </label>
             <div className="relative bg-linen rounded-full mx-5 focus:outline-none">
               <input
-                type={visibility.password ? "text" : "password"}
+                type={visibility.newPassword ? "text" : "password"}
                 id="newPassword"
-                className="rounded-full w-full py-2 px-4 focus:outline-none"
-                name="newpassword"
-                value={formData.newpassword}
+                name="newPassword"
+                value={formData.newPassword}
                 onChange={changeHandler}
                 placeholder="Enter Your New Password"
+                className="rounded-full w-full py-2 px-4 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => toggleVisibility("newPassword")}
                 className="absolute inset-y-0 right-3 flex items-center text-Sapphire-Blue"
               >
-                {visibility.password ? (
+                {visibility.newPassword ? (
                   <HiEyeOff className="size-5 text-base-content/40" />
                 ) : (
                   <HiEye className="size-5 text-base-content/40" />
@@ -143,28 +148,28 @@ function ResetPasswordPage() {
           {/* confirm password */}
           <div className="grid gap-2">
             <label
-              htmlFor="confirmNewPassword"
+              htmlFor="confirmPassword"
               className="text-white font-bold ml-4"
             >
               Confirm New Password
             </label>
             <div className="relative bg-linen rounded-full mx-5 focus:outline-none">
               <input
-                type={visibility.confirmNewPassword ? "text" : "password"}
-                id="confirmNewPassword"
+                type={visibility.confirmPassword ? "text" : "password"}
+                id="confirmPassword"
                 className="bg-linen rounded-full w-full py-2 px-4  focus:outline-none"
-                name="confirmNewPassword"
-                value={formData.confirmNewPassword}
+                name="confirmPassword"
+                value={formData.confirmPassword}
                 onChange={changeHandler}
                 placeholder="Confirm New Password"
               />
 
               <button
                 type="button"
-                onClick={() => toggleVisibility("confirmNewPassword")}
+                onClick={() => toggleVisibility("confirmPassword")}
                 className="absolute inset-y-0 right-3 flex items-center text-Sapphire-Blue"
               >
-                {visibility.confirmNewPassword ? (
+                {visibility.confirmPassword ? (
                   <HiEyeOff className="size-5 text-base-content/40" />
                 ) : (
                   <HiEye className="size-5 text-base-content/40" />

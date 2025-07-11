@@ -383,9 +383,9 @@ export async function verifyOtp(req, res){
 
 export async function resetPassword(req, res) {
     try {
-        const {email, newPassword, confirmPasswod} = req.body;
+        const {email, newPassword, confirmPassword} = req.body;
 
-        if(!(email?.trim() || newPassword?.trim() || confirmPasswod?.trim())){
+        if(!email?.trim() || !newPassword?.trim() || !confirmPassword?.trim()){
             return res.status(400).json({
                 message : "All Fields are required",
                 error : true,
@@ -403,7 +403,7 @@ export async function resetPassword(req, res) {
             })
         }
 
-        if(newPassword !== confirmPasswod){
+        if(newPassword !== confirmPassword){
             return res.status(400).json({
                 message : "Both Password must be same",
                 error : true,
@@ -414,7 +414,7 @@ export async function resetPassword(req, res) {
         const salt = await bcryptjs.genSalt(10)
         const hashedPassword = await bcryptjs.hash(newPassword, salt)
 
-        const updatePassword = await UserModel.findOneAndUpdate(user._id,{
+        const updatePassword = await UserModel.findOneAndUpdate({ _id: user._id },{
             password : hashedPassword
         })
 

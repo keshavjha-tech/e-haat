@@ -21,7 +21,7 @@ function SearchBar() {
     navigate("/search");
   };
 
-  console.log("search", isSearchPage);
+  // console.log("search", isSearchPage);
 
   return (
     <div className="w-full min-w-[300px] lg:min-w-3xl  rounded-lg overflow-hidden flex items-center lg:h-full h-10 bg-slate-100 text-neutral-500 ">

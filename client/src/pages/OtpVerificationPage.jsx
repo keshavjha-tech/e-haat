@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { data, Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 import summaryApi from "../utils/summaryApi";
@@ -7,31 +7,27 @@ import AxiosToastError from "../utils/AxiosToastError";
 
 function OtpVerificationPage() {
   const [formData, setFormData] = useState(["", "", "", "", "", ""]);
+  const inputRef = useRef([]);
   const navigate = useNavigate();
-  const inputRef = useRef([])
+  const location = useLocation();
 
-  //   const changeHandler = (e) => {
-  //     const { name, value } = e.target;
-
-  //     setFormData((prev) => {
-  //       return {
-  //         ...prev,
-  //         [name]: value,
-  //       };
-  //     });
-  //   };
+  useEffect(()=>{
+    if(!location?.state?.email){
+      navigate("/forgot-password")
+    }
+  },[])
 
   const allFieldsFilled = formData.every((item) => item);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axiosInstance({
         ...summaryApi.otp_verification,
         data: {
-          otp : formData.join("")
-        }
+          otp: formData.join(""),
+          email : location?.state?.email,
+        },
       });
 
       if (response.data.error) {
@@ -41,11 +37,49 @@ function OtpVerificationPage() {
       if (response.data.success) {
         toast.success(response.data.message);
         setFormData(["", "", "", "", "", ""]);
-        // navigate("/otp-verification");
+        navigate("/reset-password",{
+          state : {
+            data : response.data,
+            email : location?.state?.email,
+          }
+        });
       }
     } catch (error) {
       AxiosToastError(error);
     }
+  };
+
+  const changeHandler = (value, index) => {
+    if (!/^\d*$/.test(value)) return;
+    const updated = [...formData];
+    updated[index] = value;
+    setFormData(updated);
+
+    if (value && index < formData.length - 1) {
+      inputRef.current[index + 1]?.focus();
+    }
+  };
+
+  const handleBackspace = (e, index) => {
+    if (e.key === "Backspace" && !formData[index] && index > 0) {
+      inputRef.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    const paste = e.clipboardData.getData("text").trim().replace(/\D/g, "");
+    if (paste.length === formData.length) {
+      const updated = paste.split("").slice(0, formData.length);
+      setFormData(updated);
+
+      updated.forEach((val, i) => {
+        if (inputRef.current[i]) {
+          inputRef.current[i].value = val;
+        }
+      });
+      inputRef.current[formData.length - 1]?.focus();
+    }
+    e.preventDefault();
   };
 
   return (
@@ -59,40 +93,32 @@ function OtpVerificationPage() {
         </span> */}
 
         <form onSubmit={submitHandler} className="mt-6 grid gap-4 text-lg">
-          {/* email */}
           <div className="grid gap-2">
             <label htmlFor="otp" className="text-white font-bold ml-4">
               Enter the OTP
             </label>
+
             <div className="flex justify-between gap-2 sm:gap-1">
-              {formData.map((item, index) => {
+              {formData.map((value, index) => {
                 return (
                   <input
                     key={index}
+                    // ref={(ref) => {
+                    //   inputRef.current[index];
+                    //   return ref;
+                    // }}
+
+                    ref={(el) => (inputRef.current[index] = el)}
                     type="text"
-                    ref={(ref)=>{
-                      inputRef.current[index]
-                      return ref
-                    }}
-                    value={formData[index]}
-                    
-                    onChange={(e)=>{
-                      const value = e.target.value;
-
-                      console.log("value", value)
-
-                      const newFormData = [...formData]
-                      newFormData[index] = value
-                      setFormData(newFormData)
-
-                      if(value && index <5){
-                        inputRef.current[index+1].focus()
-                      }
-                    }}
-                    maxLength={1}
                     inputMode="numeric"
                     pattern="[0-9]*"
-                    id="otp"
+                    maxLength={1}
+                    value={value}
+                    id={`otp-${index}`}
+                    aria-label={`OTP digit ${index + 1}`}
+                    onChange={(e) => changeHandler(e.target.value, index)}
+                    onKeyDown={(e) => handleBackspace(e, index)}
+                    onPaste={handlePaste}
                     className="no-spinner text-center bg-linen w-full max-w-14 rounded py-2 px-4 mx-auto  focus:outline-none"
                   />
                 );

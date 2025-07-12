@@ -72,6 +72,7 @@ export async function registerUserController(req, res) {
     }
 }
 
+//Email verification controller
 export async function verifyEmailController (req, res) {
     try {
         const {code} = req.body;

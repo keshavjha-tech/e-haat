@@ -5,12 +5,16 @@ import { FaUserCircle } from "react-icons/fa";
 import { BsCart3 } from "react-icons/bs";
 import { LuCircleUserRound } from "react-icons/lu";
 import useMobile from "../hooks/useMobile";
+import {useSelector} from "react-redux"
 
 function Header() {
   const [isMobile] = useMobile();
   const location = useLocation();
   const isSearchPage = location.pathname === "/search";
   const navigate = useNavigate();
+  const user = useSelector((state)=>state?.user)
+
+  console.log('user from redux', user)
 
   const redirectToLoginPage = () =>{
     navigate("/login")

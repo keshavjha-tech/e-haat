@@ -9,7 +9,8 @@ import
     verifyEmailController,
     verifyOtp,
     resetPassword,
-    refreshToken} 
+    refreshToken,
+    userDetailsController} 
 from '../controllers/user.controller.js'
 import { verifyJWT } from '../middleware/auth.middleware.js';
 import upload from '../middleware/multer.middleware.js';
@@ -29,5 +30,6 @@ userRouter.route('/forgot-password').put(forgotPasswordController)
 userRouter.route('/verify-forgot-password-otp').put(verifyOtp)
 userRouter.route('/reset-password').put(resetPassword)
 userRouter.route('/refresh-token').post(refreshToken);
+userRouter.route('/user-detail').get(verifyJWT, userDetailsController);
 
 export default userRouter

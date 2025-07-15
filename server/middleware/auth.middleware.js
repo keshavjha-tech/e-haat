@@ -8,7 +8,9 @@ try {
 
     if(!token){
         return res.status(401).json({
-            message : "Unauthorized access",
+            message : "Token missing",
+            error : true,
+            success: false
         })
     }
 
@@ -27,10 +29,21 @@ try {
     next();
 
 } catch (error) {
+     if (
+      error.name === "TokenExpiredError" ||
+      error.name === "JsonWebTokenError"
+    ) {
+      return res.status(401).json({
+        message: error.message,
+        error: true,
+        success: false,
+      });
+    }
+
     return res.status(500).json({
-        message : error.message || error,
-        error : true,
-        success : false
+      message: "Internal Server Error",
+      error: true,
+      success: false,
     })
 }
 }

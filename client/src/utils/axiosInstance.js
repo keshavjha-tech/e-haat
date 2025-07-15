@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
 
 //regenrate accessToken from refreshToken
 
-axiosInstance.interceptors.request.use(
+axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -34,23 +34,25 @@ axiosInstance.interceptors.request.use(
       originalRequest.retry = true;
 
       const refreshToken = localStorage.getItem("refreshToken");
+      console.log("Attempting to refresh with token:", refreshToken);
 
       if (refreshToken) {
         const newAccessToken = await refreshAccessToken(refreshToken)
 
-        if(newAccessToken){
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-            return axiosInstance(originalRequest)
+        if (newAccessToken) {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+          return axiosInstance(originalRequest)
         }
       }
     }
     return Promise.reject(error)
   }
+
 );
 
 const refreshAccessToken = async (refreshToken) => {
   try {
-    const response = await axiosInstance({
+    const response = await axios({
       ...summaryApi.refreshToken,
       headers: {
         Authorization: `Bearer ${refreshToken}`,
@@ -58,10 +60,19 @@ const refreshAccessToken = async (refreshToken) => {
     })
 
     const accessToken = response.data.data.accessToken
+
+    console.log("accessToken", accessToken);
+
+
     localStorage.setItem('accessToken', accessToken)
     return accessToken
   } catch (error) {
-    console.log(error);
+    if (error.response) {
+    console.log("Refresh failed:", error.response.data.message);
+  } else {
+    console.log("Refresh failed: network or server error");
+  }
+    return null;
   }
 };
 

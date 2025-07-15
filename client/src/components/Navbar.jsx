@@ -1,20 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchBar from "./SearchBar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
+import { FaAngleUp, FaUserCircle } from "react-icons/fa";
 import { BsCart3 } from "react-icons/bs";
 import { LuCircleUserRound } from "react-icons/lu";
 import useMobile from "../hooks/useMobile";
 import {useSelector} from "react-redux"
+import { FaAngleDown } from "react-icons/fa";
+import UserMenu from "./UserMenu";
 
-function Header() {
+function Navbar() {
   const [isMobile] = useMobile();
   const location = useLocation();
   const isSearchPage = location.pathname === "/search";
   const navigate = useNavigate();
-  const user = useSelector((state)=>state?.user)
+  const [openUserMenu, setOpenUserMenu] = useState(false)
+  const user = useSelector((state)=>state?.user?.user)
 
-  console.log('user from redux-store', user.user)
+  console.log('user from redux-store', user)
 
   const redirectToLoginPage = () =>{
     navigate("/login")
@@ -56,8 +59,24 @@ function Header() {
             {/* For Desktop */}
 
             <div className="hidden lg:flex items-center gap-7">
-              <button onClick={redirectToLoginPage} className="flex gap-1 px-2 "> <LuCircleUserRound className="size-6 "/>Login</button>
-
+              {
+                user?._id ? (
+                  <div className="relative">
+                     <div className="flex items-center gap-2">
+                      <p>{user.name}</p>
+                      <FaAngleDown />
+                      {/* <FaAngleUp /> */}
+                     </div>
+                     <div className="absolute m top-12">
+                      <div className="bg-white rounded p-4 max-w-52">
+                        <UserMenu />
+                      </div>
+                     </div>
+                  </div>
+                ) : (<button onClick={redirectToLoginPage} className="flex gap-1 px-2 "> <LuCircleUserRound className="size-6 "/>Login</button>)
+              }
+              
+                
               <button className="flex items-center gap-2">
                   {/* cart icon */}
                 <div>
@@ -79,4 +98,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default Navbar;

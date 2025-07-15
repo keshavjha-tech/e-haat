@@ -450,8 +450,8 @@ export async function refreshToken(req, res) {
         const refreshToken = req.cookies.refreshToken || req?.headers?.authorization?.split(" ")[1]
 
         if(!refreshToken){
-            return res.status(402).json({
-                message : "Invalid Access. why ?",
+            return res.status(401).json({
+                message : "No refresh token provided",
                 error : true,
                 success : false
             })
@@ -461,7 +461,7 @@ export async function refreshToken(req, res) {
 
         if(!verifyToken){
             return res.status(401).json({
-                message : "Token is expired",
+                message : "Token is invalid or expired",
                 success : false
             })
         }

@@ -14,7 +14,7 @@ function Header() {
   const navigate = useNavigate();
   const user = useSelector((state)=>state?.user)
 
-  console.log('user from redux', user)
+  console.log('user from redux-store', user.user)
 
   const redirectToLoginPage = () =>{
     navigate("/login")

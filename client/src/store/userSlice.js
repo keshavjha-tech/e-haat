@@ -1,9 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
+import fetchUserDeatil from "../utils/fetchUserDetail";
 
+export const loggedInUser = ()=>{
+    try {
+        const storedUser = fetchUserDeatil();
+
+        if(!storedUser ||  storedUser === "undefined" || storedUser === "null"){
+            return null;
+        }
+        return JSON.parse(storedUser);
+            
+    } catch (error) {
+        console.error("Error parsing stored auth data:", error);
+    }
+}
 const initialState = {
-    _id : "",
-    name : "",
-    email : ""
+   user: loggedInUser() 
 }
 
 const userSlice = createSlice({
@@ -11,7 +23,7 @@ const userSlice = createSlice({
     initialState,
     reducers : {
         setUser : (state, action) =>{
-            state = {...action.payload}
+           state.user = action.payload
         }
     }
 })

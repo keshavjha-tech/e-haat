@@ -5,6 +5,10 @@ import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 import summaryApi from "../utils/summaryApi";
 import AxiosToastError from "../utils/AxiosToastError";
+import fetchUserDeatil from "../utils/fetchUserDetail";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/userSlice";
+
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -15,6 +19,7 @@ function LoginPage() {
   // const [showPassword, setShowPassword] = useState(false);
   // const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const [visibility, setVisibility] = useState({
     password: false,
@@ -57,6 +62,10 @@ function LoginPage() {
         toast.success(response.data.message);
         localStorage.setItem('accessToken', response.data.data.accessToken)
         localStorage.setItem('refreshToken', response.data.data.refreshToken)
+
+       const userData = await fetchUserDeatil();
+       dispatch(setUser(userData))
+       console.log('from login', userData)
         setFormData({
           email: "",
           password: "",

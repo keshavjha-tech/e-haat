@@ -5,7 +5,7 @@ import { FaAngleUp, FaUserCircle } from "react-icons/fa";
 import { BsCart3 } from "react-icons/bs";
 import { LuCircleUserRound } from "react-icons/lu";
 import useMobile from "../hooks/useMobile";
-import {useSelector} from "react-redux"
+import { useSelector } from "react-redux"
 import { FaAngleDown } from "react-icons/fa";
 import UserMenu from "./UserMenu";
 
@@ -15,16 +15,23 @@ function Navbar() {
   const isSearchPage = location.pathname === "/search";
   const navigate = useNavigate();
   const [openUserMenu, setOpenUserMenu] = useState(false)
-  const user = useSelector((state)=>state?.user?.user)
+  const user = useSelector((state) => state?.user)
 
   console.log('user from redux-store', user)
 
-  const redirectToLoginPage = () =>{
+  const redirectToLoginPage = () => {
     navigate("/login")
   }
 
+ const mobileUserHandler = () => {
+  if( !user._id){
+    navigate("/login")
+    return
+  }
+ }
+
   // console.log("location", location);
-  // console.log('ismobile', isMobile);
+  console.log('ismobile', isMobile);
   // console.log("isSearchPage", isSearchPage);
   return (
     <header className="h-24 lg:h-20 lg:shadow-md sticky top-0 z-40 items-center flex  flex-col gap-2 justify-center bg-white">
@@ -52,8 +59,8 @@ function Navbar() {
 
           <div>
             {/* For mobile version  */}
-            <button className="lg:hidden">
-              <FaUserCircle size={24} />
+            <button onClick={mobileUserHandler} className="lg:hidden">
+              <FaUserCircle  className="size-7 pt-1"/>
             </button>
 
             {/* For Desktop */}
@@ -61,26 +68,39 @@ function Navbar() {
             <div className="hidden lg:flex items-center gap-7">
               {
                 user?._id ? (
-                  <div className="relative">
-                     <div className="flex items-center gap-2">
-                      <p>{user.name}</p>
-                      <FaAngleDown />
-                      {/* <FaAngleUp /> */}
-                     </div>
-                     <div className="absolute m top-12">
-                      <div className="bg-white rounded p-4 max-w-52">
-                        <UserMenu />
-                      </div>
-                     </div>
+                  <div className="relative cursor-pointer">
+                    <div
+                      onMouseEnter={() => setOpenUserMenu(true)}
+                      onMouseLeave={() => setOpenUserMenu(false)}
+                      className="flex items-center gap-1 px-3 py-2 rounded transition-all duration-200 ease-in-out group-hover:bg-gray-100">
+                      <p className="transition-colors duration-200">{user.name}</p>
+
+                      {
+                        openUserMenu ? (<FaAngleUp className="text-lg mt-1 transition-transform duration-200" />)
+                          : (<FaAngleDown className="text-lg mt-1 transition-transform duration-200" />)
+                      }
+
+
+                    </div>
+                    {
+                      openUserMenu && (
+                        <div className="absolute top-10 w-full z-10 animate-fadeInSlideDown"
+                          onMouseEnter={() => setOpenUserMenu(true)}
+                          onMouseLeave={() => setOpenUserMenu(false)}>
+                          <div className="bg-white rounded p-4 w-48 shadow-lg">
+                            <UserMenu />
+                          </div>
+                        </div>)
+                    }
                   </div>
-                ) : (<button onClick={redirectToLoginPage} className="flex gap-1 px-2 "> <LuCircleUserRound className="size-6 "/>Login</button>)
+                ) : (<button onClick={redirectToLoginPage} className="flex gap-1 px-2 "> <LuCircleUserRound className="size-6 " />Login</button>)
               }
-              
-                
+
+
               <button className="flex items-center gap-2">
-                  {/* cart icon */}
+                {/* cart icon */}
                 <div>
-                  <BsCart3 size={24}/>
+                  <BsCart3 size={24} />
                 </div>
                 <div>
                   <p>cart</p>

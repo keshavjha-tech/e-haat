@@ -150,6 +150,8 @@ export async function loginController(req, res) {
             last_login_date : new Date()
         })
 
+        const loggedInUser = await UserModel.findById(user._id).select("-password");
+
         const cookiesOption = {
             httpOnly : true,
             secure : true,

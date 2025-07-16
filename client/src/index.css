@@ -1,20 +1,33 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Jockey+One&display=swap');
 
-@theme{
-  --font-jockey : "Jockey One";
+body {
+  @apply bg-blue-50;
+}
+
+@theme {
+  --font-jockey: "Jockey One";
 
 
   --color-light-gray: #F5F5F5;
   --color-Sapphire-Blue: #102C57;
   --color-linen: #F8F0E5;
-  --color-sand: #DAC0A3;  
-  --color-charcol-navy: #172337; 
-}
+  --color-sand: #DAC0A3;
+  --color-charcol-navy: #172337;
 
+  --animate-fadeInSlideDown: fadeInSlideDown 0.3s ease-out;
 
-body{ 
-  @apply bg-blue-50;
+  @keyframes fadeInSlideDown {
+    0% {
+      opacity: 0;
+       transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1; 
+      transform: translateY(0);
+    }
+  }
+
 }
 
 

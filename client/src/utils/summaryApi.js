@@ -1,3 +1,5 @@
+import { logout } from "../store/userSlice"
+
 export const baseURL="http://localhost:8080"
 
 
@@ -30,6 +32,10 @@ const summaryApi = {
     userDetails: {
         url : '/api/user/user-detail',
         method : 'get'
+    },
+    logout: {
+        url : '/api/user/logout',
+        method: 'get'
     }
 }
 

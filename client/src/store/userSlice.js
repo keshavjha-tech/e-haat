@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import fetchUserDeatil from "../utils/fetchUserDetail";
 
-export const loggedInUser = ()=>{
+export const storedAuthData = ()=>{
     try {
-        const storedUser = fetchUserDeatil();
+        const storedUser = localStorage.getItem("loggedInUser")
 
         if(!storedUser ||  storedUser === "undefined" || storedUser === "null"){
             return null;
@@ -15,7 +14,7 @@ export const loggedInUser = ()=>{
     }
 }
 const initialState = {
-   user: loggedInUser() 
+   user: storedAuthData()
 }
 
 const userSlice = createSlice({
@@ -24,10 +23,14 @@ const userSlice = createSlice({
     reducers : {
         setUser : (state, action) =>{
            state.user = action.payload
+        },
+        logout: (state, action) => {
+            state.user = null;
+            localStorage.clear()
         }
     }
 })
 
-export const {setUser} = userSlice.actions
+export const {setUser, logout} = userSlice.actions
 
 export default userSlice.reducer

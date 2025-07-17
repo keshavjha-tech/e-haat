@@ -3,6 +3,7 @@ import { LuCircleUserRound } from 'react-icons/lu';
 import { CiHeart } from "react-icons/ci";
 import { MdLogout } from "react-icons/md";
 import { IoMdNotificationsOutline } from "react-icons/io"
+import { GiPowerButton } from "react-icons/gi";
 import { PiPackage } from "react-icons/pi";
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +15,7 @@ import AxiosToastError from '../utils/AxiosToastError';
 
 
 
-function UserMenu() {
+function UserDashboardMenu() {
     const { user } = useSelector((state) => state.user)
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -58,11 +59,11 @@ function UserMenu() {
                     <IoMdNotificationsOutline className='size-5' />Notification
                 </Link>
                 <button onClick={logoutHandler} className='flex gap-2 text-sm hover:bg-slate-100'>
-                    <MdLogout className='size-5' />Logout
+                    <GiPowerButton className='size-5' />Logout
                 </button>
             </div>
         </div>
     )
 }
 
-export default UserMenu
+export default UserDashboardMenu

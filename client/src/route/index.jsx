@@ -8,6 +8,9 @@ import ForgotPasswordPage from '../pages/ForgotPasswordPage.jsx'
 import OtpVerificationPage from '../pages/OtpVerificationPage.jsx'
 import ResetPasswordPage from '../pages/ResetPasswordPage.jsx'
 import UserMenuMobilePage from '../pages/UserMenuMobilePage.jsx'
+import UserProfilePage from '../pages/UserProfilePage.jsx'
+import UserDashboard from '../layout/UserDashboard.jsx'
+import WishlistPage from '../pages/WishlistPage.jsx'
 
 const router = createBrowserRouter([
     {
@@ -23,6 +26,15 @@ const router = createBrowserRouter([
             { path : "otp-verification", element : <OtpVerificationPage /> },
             { path : "reset-password", element : <ResetPasswordPage /> },
             { path : "user-menu", element : <UserMenuMobilePage /> },
+            { 
+                path : "dashboard",
+                element: <UserDashboard />,
+                children: [
+                    {path : "profile", element : <UserProfilePage /> },
+                    {path : "wishlist", element : <WishlistPage /> },
+                    {path : "notifications"},
+                ]
+            }
         ]
     }
 ])

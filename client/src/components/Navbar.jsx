@@ -17,21 +17,22 @@ function Navbar() {
   const [openUserMenu, setOpenUserMenu] = useState(false)
   const user = useSelector((state) => state?.user)
 
-  console.log('user from redux-store', user)
+  // console.log('user from redux-store', user)
 
   const redirectToLoginPage = () => {
     navigate("/login")
   }
 
  const mobileUserHandler = () => {
-  if( !user._id){
+  if( !user?.user?._id){
     navigate("/login")
     return
   }
+  navigate("/user-menu")
  }
 
   // console.log("location", location);
-  console.log('ismobile', isMobile);
+  // console.log('ismobile', isMobile);
   // console.log("isSearchPage", isSearchPage);
   return (
     <header className="h-24 lg:h-20 lg:shadow-md sticky top-0 z-40 items-center flex  flex-col gap-2 justify-center bg-white">
@@ -67,13 +68,13 @@ function Navbar() {
 
             <div className="hidden lg:flex items-center gap-7">
               {
-                user?._id ? (
+                user?.user?._id ? (
                   <div className="relative cursor-pointer">
                     <div
                       onMouseEnter={() => setOpenUserMenu(true)}
                       onMouseLeave={() => setOpenUserMenu(false)}
                       className="flex items-center gap-1 px-3 py-2 rounded transition-all duration-200 ease-in-out group-hover:bg-gray-100">
-                      <p className="transition-colors duration-200">{user.name}</p>
+                      <p className="transition-colors duration-200">{user.user.name}</p>
 
                       {
                         openUserMenu ? (<FaAngleUp className="text-lg mt-1 transition-transform duration-200" />)

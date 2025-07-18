@@ -9,8 +9,8 @@ const UserDashboard = () => {
   console.log("user dashboard",user)
   // console.trace()
   return (
-    <section className="bg-white">
-  <div className="container mx-auto p-3 lg:grid lg:grid-cols-[250px_1fr] gap-4">
+    <section>
+   <div className="container mx-auto p-3 lg:grid lg:grid-cols-[250px_1fr] gap-4">
     {/* Left: Sidebar Menu */}
     <aside className="py-4 sticky top-24 max-h-[calc(100vh-96px)] overflow-y-auto hidden lg:block border-r border-gray-200 bg-white z-10">
       <UserDashboardMenu />

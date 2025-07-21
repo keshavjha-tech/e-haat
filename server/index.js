@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import helmet from 'helmet'
 import connectDB from './config/connection.js';
 import userRouter from './routes/user.route.js';
+import adminRouter from './routes/admin.routes.js';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 })
 
 app.use('/api/user', userRouter)
+app.use('/api/user', adminRouter)
 console.log("Secret:", process.env.ACCESS_TOKEN_SECRET_KEY);
 
 connectDB().then(() => {

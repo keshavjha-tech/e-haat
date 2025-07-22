@@ -88,10 +88,23 @@ const userSchema = new mongoose.Schema({
         default: 'Not Applied',
         enum: ['Not Applied', 'Waiting Approval', 'Rejected', 'Approved']
     },
+     averageRating: {
+        type: Number,
+        default: 0
+    },
+    ratingCount: {
+        type: Number,
+        default: 0
+    },
     products_listed: [{
         type: mongoose.Schema.ObjectId,
         ref: 'Product'
     }],
+     reportCount: {
+        type: Number,
+        default: 0
+    }
+    
 }, { timestamps: true })
 
 export const UserModel = mongoose.model("User", userSchema)

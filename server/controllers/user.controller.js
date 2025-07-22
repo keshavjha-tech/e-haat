@@ -12,6 +12,7 @@ import 'dotenv/config'
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
+import { UserReportModel } from '../models/userReport.model.js';
 
 //Register Controller
 
@@ -526,8 +527,46 @@ const logoutController = asyncHandler(async (req, res) => {
     return res.status(200, user, "Your seller application have been submitted")
 })
 
+const reportUser = asyncHandler(async(req, res) => {
+    const { userId } = req.params
+    const reporterID = req.user._id
+    const { reason, details} = req.body
+
+    if(userId === reporterID.toSring()){
+        throw new ApiError(400, "You cannot report yourself")
+    }
+
+    if (!reason) {
+        throw new ApiError(400, "A reason for the report is required.");
+    }
+
+    const report = await UserReportModel.create({
+        user: userId,
+        reporter: sellerId,
+        reason,
+        details
+    })
+      if (!report) {
+        throw new ApiError(500, "Failed to submit the report. Please try again.");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(201, report, "Report user successfully")
+    )
+})
+
 export {
     registerUserController,
-    logoutController,applyToBeSeller,userDetailsController,refreshToken,resetPassword,verifyOtp,forgotPasswordController,updateUserDetails,
-    uploadAvatar,loginController,verifyEmailController
+    logoutController,
+    applyToBeSeller,
+    userDetailsController,
+    refreshToken,
+    resetPassword,
+    verifyOtp,
+    forgotPasswordController,
+    updateUserDetails,   
+    uploadAvatar,
+    loginController,
+    verifyEmailController,
+    reportUser
 }

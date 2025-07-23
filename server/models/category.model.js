@@ -10,7 +10,7 @@ const categorySchema = new Schema({
     },
     image: {
         url: { type: String, required: true },
-        publicId: { type: String, required: true }
+        public_id: { type: String, required: true }
     },
     slug: {
         type: String, // For URL-friendly names (e.g., "home-and-garden")

@@ -3,20 +3,25 @@ import mongoose, { Schema } from "mongoose";
 const subCategorySchema = new Schema({
     name: {
         type: String,
-        default: "",
-        required: true,
+        required: [true, "Sub-category name is required."],
+        unique: true, // Prevents duplicate sub-category names
         trim: true
     },
     image: {
-        type: String,
-        default: ""
+        url: { type: String, required: true },
+        public_id: { type: String, required: true } 
     },
-    categoryId: [
-        {
-            type: mongoose.Schema.ObjectId,
-            ref: 'category'
-        }
-    ]
+    parentCategories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category', 
+        required: true
+    }],
+     slug: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
+    }
 }, { timestamps: true });
 
 export const SubCategoryModel = mongoose.model('subCategory', subCategorySchema);

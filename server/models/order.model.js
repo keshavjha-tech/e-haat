@@ -44,6 +44,23 @@ const orderSchema = new mongoose.Schema({
     invoice_receipt : {
         type : String,
         default : ""
+    },
+    isPaid:{
+        type: Boolean
+    },
+    paidAt:{
+        type: Date
+    },
+    isDelivered:{
+        type: Boolean
+    },
+    deliveredAt:{
+        type: Date
+    },
+    status:{
+        type: String,
+        enum: ['Created', 'Processing', 'Shipped', 'Delivered'],
+        
     }
 
 }, {timestamps : true})

@@ -45,9 +45,17 @@ connectDB()
 import userRouter from './routes/user.route.js';
 import adminRouter from './routes/admin.routes.js';
 import sellerRouter from './routes/seller.route.js';   
+import categoryRouter  from './routes/category.routes.js';
+import subCategoryRouter from './routes/subCategory.routes.js';
+import productRouter from './routes/product.routes.js';
+import cartRouter from './routes/cart.routes.js';
 
 
 //routes decleration
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/admin', adminRouter)
 app.use('/api/v1/seller', sellerRouter)
+app.use('/api/v1/category', categoryRouter)
+app.use('/api/v1/sub-category', subCategoryRouter)
+app.use('/api/v1/products', productRouter)
+app.use('/api/v1/cart', cartRouter)

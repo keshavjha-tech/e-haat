@@ -8,4 +8,5 @@ sellerRouter.route('/:sellerId/review').post(verifyJWT, createSellerReview)
 sellerRouter.route('/review/:reviewId').put(verifyJWT, updateSellerReview)
 sellerRouter.route('/:sellerId/report').post(verifyJWT, reportSeller)
 
+
 export default sellerRouter

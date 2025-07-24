@@ -13,7 +13,7 @@ const categorySchema = new Schema({
         public_id: { type: String, required: true }
     },
     slug: {
-        type: String, // For URL-friendly names (e.g., "home-and-garden")
+        type: String, //  URL-friendly names 
         unique: true,
         lowercase: true
     }

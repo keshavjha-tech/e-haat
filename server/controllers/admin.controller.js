@@ -51,7 +51,6 @@ const approveSeller = asyncHandler(async (req, res) => {
         });
     } catch (emailError) {
         console.error("Failed to send approval email:", emailError);
-        // Do not block the main response, just log the email error
     }
 
     return res.status(200).json(

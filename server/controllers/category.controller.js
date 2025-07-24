@@ -94,10 +94,10 @@ const deleteCategory = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Category not found,")
     }
 
-    //delete image from cloudinary
+    //first delete image from cloudinary
     await deleteFromCloudinary(category.image.public_id)
 
-    // delete categoryId
+    // then delete categoryId
     await CategoryModel.findByIdAndDelete(categoryId);
 
     return res.status(200).json(

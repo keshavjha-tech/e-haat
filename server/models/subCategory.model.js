@@ -4,7 +4,7 @@ const subCategorySchema = new Schema({
     name: {
         type: String,
         required: [true, "Sub-category name is required."],
-        unique: true, // Prevents duplicate sub-category names
+        unique: true, 
         trim: true
     },
     image: {

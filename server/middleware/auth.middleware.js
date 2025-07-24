@@ -28,7 +28,7 @@ try {
        if (error instanceof jwt.JsonWebTokenError) { // Catches TokenExpiredError, etc.
             return next(new ApiError(401, error?.message || "Invalid access token."));
         }
-        // Pass any other errors to the next error-handling middleware
+      
         return next(error);
     }
 

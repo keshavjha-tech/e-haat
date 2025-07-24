@@ -11,9 +11,9 @@ const storage = multer.memoryStorage();
 // Filter to ensure only images are uploaded
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
-        cb(null, true); // Accept file
+        cb(null, true); 
     } else {
-        cb(new ApiError(400, "Only image files are allowed."), false); // Reject file
+        cb(new ApiError(400, "Only image files are allowed."), false); 
     }
 };
 
@@ -21,6 +21,6 @@ export const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5 MB file size limit
+        fileSize: 5 * 1024 * 1024 // 5 MB size limit
     }
 });

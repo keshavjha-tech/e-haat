@@ -1,98 +1,114 @@
-#(e-haat: A Multi-Vendor E-commerce Platform (Backend))
+#  e-Haat: A Multi-Vendor E-commerce Platform (Backend)
 
+This repository hosts the **complete backend source code** for **e-Haat**, a feature-rich multi-vendor e-commerce platform envisioned as a digital "online bazaar." The backend is built with **Node.js**, **Express.js**, and **MongoDB**, designed to be **scalable**, **secure**, and **maintainable**.
 
-This repository contains the complete backend source code for e-haat, a feature-rich, multi-vendor e-commerce platform inspired by the vision of creating a comprehensive "online bazaar." The project is built with a focus on creating a scalable, secure, and maintainable backend system using the MERN stack.
+At its core, e-haat features a **Role-Based Access Control (RBAC)** system managing interactions between three key user roles: **Users**, **Sellers**, and **Admins**.
 
-The core of this project is a sophisticated Role-Based Access Control (RBAC) system that manages complex interactions between three distinct user roles: Users, Sellers, and Admins.
+---
 
-# Key Features
- Authentication & Authorization
-Secure User Authentication: Implemented a robust JWT-based authentication system with a two-token strategy (Access & Refresh Tokens) for persistent and safe user sessions.
+##  Key Features
 
-Password Hashing: Utilizes bcryptjs for secure password hashing and verification.
+###  Authentication & Authorization
 
-Dynamic Role-Based Access Control (RBAC): A flexible authorizeRole middleware protects all sensitive API endpoints, allowing for granular control over what each user role can access.
+* **JWT-Based Auth System**: Dual-token strategy using Access and Refresh tokens for secure and persistent sessions.
+* **Secure Passwords**: Uses `bcrypt` for hashing and verifying passwords.
+* **Role-Based Access Control**: Middleware-based RBAC system for fine-grained route protection.
 
-# Seller & Admin Management
-Full Seller Lifecycle: A complete workflow for users to apply to become sellers, with an admin dashboard to approve or reject applications.
+###  Seller & Admin Management
 
-Automated Notifications: Integrated email services to send automated notifications for seller approvals, rejections, and account status changes.
+* **Seller Lifecycle**: Users can apply to become sellers. Admins can approve or reject via a dedicated dashboard.
+* **Automated Notifications**: Email alerts for approvals, rejections, and status changes.
+* **Admin Controls**: Endpoints to manage categories, resolve reports, and suspend/reactivate sellers.
 
-Admin Oversight: Admins have dedicated endpoints to manage categories, resolve reports, and suspend or reactivate seller accounts.
+###  Trust & Safety System
 
-# Trust & Safety System
-Two-Way Reporting: Users can report sellers for policy violations, and sellers can report users for problematic behavior.
+* **Two-Way Reporting**: Users and sellers can report each other for violations.
+* **Admin Moderation**: Admins review, resolve, and take actions on reports.
 
-Admin Review Workflow: A dedicated system for admins to view, review, and resolve reports, with the ability to take action against user or seller accounts.
+###  Cloud Media Management
 
-# Cloud Media Management
-Robust Image Handling: Integrated Multer for handling multipart/form-data and Cloudinary for cloud-based image storage.
+* **Image Uploads**: `Multer` + `Cloudinary` for efficient, cloud-based image storage.
+* **Parallel Uploads**: Product images are uploaded simultaneously using `Promise.all`.
+* **Auto Deletion**: Unused assets are deleted when a product/category is removed.
 
-Efficient Uploads: Supports parallel image uploads for products using Promise.all.
+###  Product & Category Management
 
-Asset Deletion: Includes logic to delete images from Cloudinary when a product or category is removed, ensuring no orphaned files and managing storage costs.
+* **Dynamic Categories**: Admins can manage product categories and sub-categories.
+* **Flexible Sub-Category Relations**: Sub-categories can link to multiple parents.
+* **Seller Control**: Approved sellers manage their own product listings independently.
 
-# Product & Category Management
-Dynamic Categories: Admins can create, update, and delete product categories and sub-categories.
+---
 
-Flexible Relationships: A sub-category can be linked to multiple parent categories, allowing for flexible product organization.
+##  Tech Stack
 
-Seller Product Management: Approved sellers have dedicated endpoints to create, update, and delete their own product listings.
+| Category           | Technology                      |
+| ------------------ | ------------------------------- |
+| **Backend**        | Node.js, Express.js             |
+| **Database**       | MongoDB with Mongoose           |
+| **Authentication** | JWT, bcrypt                     |
+| **File Handling**  | Multer                          |
+| **Cloud Storage**  | Cloudinary                      |
+| **Email**          | Resend                          |
 
-# Tech Stack
-Backend: Node.js, Express.js
+---
 
-Database: MongoDB with Mongoose
+##  Getting Started
 
-Authentication: JSON Web Tokens (JWT), bcryptjs
+Follow these steps to set up the project locally:
 
-File Handling: Multer
+###  Prerequisites
 
-Cloud Storage: Cloudinary
+* Node.js installed
+* MongoDB Atlas account (or local MongoDB)
+* Cloudinary account
 
-Email: Nodemailer (or your preferred service)
+###  Installation
 
-# Getting Started
-To get a local copy up and running, follow these simple steps.
+1. **Clone the repository:**
 
-Prerequisites
-Node.js installed
+   ```bash
+   git clone https://github.com/keshavjha205e/e-haat.git
+   ```
 
-MongoDB Atlas account (or a local MongoDB instance)
+2. **Navigate to the backend folder:**
 
-Cloudinary account
+   ```bash
+   cd e-haat/server
+   ```
 
-Installation
-Clone the repository:
+3. **Install dependencies:**
 
-git clone https://github.com/your-username/e-haat.git
+   ```bash
+   npm install
+   ```
 
-Navigate to the server directory:
+4. **Create a `.env` file** in the `/server` directory with the following content:
 
-cd e-haat/server
+   ```env
+   PORT=8000
+   MONGO_URI=your_mongodb_connection_string
+   ACCESS_TOKEN_SECRET=your_access_token_secret
+   REFRESH_TOKEN_SECRET=your_refresh_token_secret
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   ```
 
-Install NPM packages:
+5. **Run the server:**
 
-npm install
+   ```bash
+   npm run dev
+   ```
 
-Set up environment variables:
-Create a .env file in the server directory and add the following variables:
+---
 
-PORT=8000
-MONGO_URI=your_mongodb_connection_string
-ACCESS_TOKEN_SECRET=your_access_token_secret
-REFRESH_TOKEN_SECRET=your_refresh_token_secret
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+##  Contact
 
-Run the server:
+**Keshav Jha**
+ [keshavjha1081@gmail.com](mailto:keshavjha1081@gmail.com)
 
-npm run dev
+ Project Repository: [github.com/keshavjha205/e-haat](https://github.com/keshavjha205/e-haat)
 
-📞 Contact
-Keshav Jha - keshavjha1081@gmail.com
+---
 
-Project Link: https://github.com/your-username/e-haat
-
-
+>  *This project is under active development. Feedback and suggestions are welcome!*

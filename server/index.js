@@ -34,18 +34,18 @@ connectDB()
         app.listen(port, () => {
             console.log("Server is running on ", port)
         })
-            .catch((err) => {
-                console.log("MONGO db connection failed");
+    })
+    .catch((err) => {
+        console.log("MONGO db connection failed");
 
-            })
     })
 
 
 //routes
 import userRouter from './routes/user.route.js';
 import adminRouter from './routes/admin.routes.js';
-import sellerRouter from './routes/seller.route.js';   
-import categoryRouter  from './routes/category.routes.js';
+import sellerRouter from './routes/seller.route.js';
+import categoryRouter from './routes/category.routes.js';
 import subCategoryRouter from './routes/subCategory.routes.js';
 import productRouter from './routes/product.routes.js';
 import cartRouter from './routes/cart.routes.js';

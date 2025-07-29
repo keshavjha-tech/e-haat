@@ -2,9 +2,6 @@ import sendEmail from '../config/sendEmail.js';
 import { UserModel } from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
-import { generateRefreshToken } from '../utils/generateRefreshToken.js';
-import { generateAccessToken } from '../utils/generateAccessToken.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { generateOTP } from '../utils/generateOTP.js';
 import { resetPasswordTemplate } from '../utils/resetPasswordTemplate.js';
 import jwt from 'jsonwebtoken'
@@ -13,6 +10,21 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { UserReportModel } from '../models/userReport.model.js';
+
+const generateAccessAndRefreshToken = async (userId) => {
+    try {
+        const user = await UserModel.findById(userId)
+        const accessToken = user.generateAccessToken()
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return { accessToken, refreshToken }
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating tokens")
+    }
+}
 
 //Register Controller
 
@@ -95,48 +107,36 @@ const registerUserController = asyncHandler(async (req, res) => {
 
 // Login controller 
 
- const loginController = async (req, res) => {
-    try {
+ const loginController = asyncHandler(async (req, res) => {
+   
         const { email, password } = req.body;
 
         if (!(email || password)) {
-            return res.status(400).json({
-                message: "All feilds are required",
-                error: true,
-                success: false
-            })
+            throw new ApiError(400, "All fields are required")
         }
 
         const user = await UserModel.findOne({ email })
 
+         console.log("Found User:", user ? "Yes" : "No");
+
         if (!user) {
-            return res.status(400).json({
-                message: "User doesn't exists.",
-                error: true,
-                success: false
-            })
+            throw new ApiError(404, "User does not exist")
         }
 
         if (user.status !== "Active") {
-            return res.status(400).json({
-                message: "Contact to Admin",
-                error: true,
-                success: false
-            })
+           throw new ApiError(400, "Inactive account.")
         }
 
-        const isPasswordValid = await bcryptjs.compare(password, user.password);
+        const isPasswordValid = await user.isPasswordCorrect(password)
 
         if (!isPasswordValid) {
-            return res.status(401).json({
-                message: "Invalid credentials",
-                error: true,
-                success: false
-            })
+           throw new ApiError(401, "Invalid user credentials || Incorrect Password")
         }
 
-        const accessToken = await generateAccessToken(user._id);
-        const refreshToken = await generateRefreshToken(user._id)
+        // const {accessToken} = await generateAccessToken(user._id);
+        // const refreshToken = await generateRefreshToken(user._id)
+
+         const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
         const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
             last_login_date: new Date()
@@ -150,27 +150,13 @@ const registerUserController = asyncHandler(async (req, res) => {
             sameSite: "None"
         }
 
-        res.cookie('accessToken', accessToken, cookiesOption);
-        res.cookie('refreshToken', refreshToken, cookiesOption);
-
-        return res.status(200).json({
-            message: "User Login Successfully",
-            error: false,
-            success: true,
-            data: {
-                // accessToken, refreshToken
-                loggedInUser
-            }
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            success: false,
-            error: true
-        })
-    }
-
-}
+        return res.status(200)
+        .cookie('accessToken', accessToken, cookiesOption)
+        .cookie('refreshToken', refreshToken, cookiesOption)
+        .json(
+            new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User loggedIn successfully")
+        )
+ })
 
 // Logout Controller
 const logoutController = asyncHandler(async (req, res) => {
@@ -196,34 +182,13 @@ const logoutController = asyncHandler(async (req, res) => {
 
 }
 )
-//upolad user Avatar
-
- const uploadAvatar = asyncHandler(async (req, res) => {
-
-    const userId = req.user._id //from auth middleware
-    const image = req.file // from multer middleware
-
-    const upload = await uploadOnCloudinary(image)
-
-    const updateUser = await UserModel.findByIdAndUpdate(userId, {
-        avatar: upload.url
-    })
-
-    return res.json({
-        message: "Profile Pic updated",
-        data: {
-            _id: userId,
-            avatar: upload.url
-        }
-    })
-})
 
 // Update user details
 
  const updateUserDetails = async (req, res) => {
     try {
         const userId = req.user._id
-        const { name, email, mobile, password, avatar } = req.body
+        const { name, email, mobile, password } = req.body
 
         let hashedPassword = ""
         if (password) {
@@ -482,7 +447,7 @@ const logoutController = asyncHandler(async (req, res) => {
     try {
         const userId = req.user._id
 
-        const user = await UserModel.findById(userId).select('-password -refresh_Token')
+        const user = await UserModel.findById(userId).select('-password -refreshToken')
 
         return res.json({
             message: "User detail",
@@ -504,7 +469,7 @@ const logoutController = asyncHandler(async (req, res) => {
  const applyToBeSeller = asyncHandler(async (req, res) => {
 
     const { store_name, store_description } = req.body;
-    const userId = req.user._id;
+    const userId = req.user?._id;
 
     //validate input
     if (!(store_name || store_description)) {
@@ -564,8 +529,7 @@ export {
     resetPassword,
     verifyOtp,
     forgotPasswordController,
-    updateUserDetails,   
-    uploadAvatar,
+    updateUserDetails,
     loginController,
     verifyEmailController,
     reportUser

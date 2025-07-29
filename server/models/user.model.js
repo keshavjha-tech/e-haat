@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -24,7 +25,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: null
     },
-    refresh_Token: {
+    refreshToken: {
         type: String,
         default: ""
     },
@@ -107,14 +108,44 @@ const userSchema = new mongoose.Schema({
     
 }, { timestamps: true })
 
-export const UserModel = mongoose.model("User", userSchema)
+
 
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(password, this.password)
+    this.password = await bcrypt.hash(this.password, 12)
     next()
 })
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
+
+    // console.log("Comparing passwords...");
+    // console.log("Input password:", password ? "provided" : "missing");
+    // console.log("Stored hash exists:", !!this.password);
+    // console.log("Stored hash length:", this.password ? this.password.length : 0);
+
+    // const result = await bcrypt.compare(password, this.password);
+    // console.log("Password comparison result:", result);
+    // return result;
 }
+
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id
+        },
+        process.env.ACCESS_TOKEN_SECRET_KEY,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        }
+    )
+}
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        { _id: this._id },
+        process.env.REFRESH_TOKEN_SECRET_KEY,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
+    )
+}
+
+export const UserModel = mongoose.model("User", userSchema)

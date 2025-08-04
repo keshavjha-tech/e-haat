@@ -1,6 +1,6 @@
 import sendEmail from '../config/sendEmail.js';
 import { UserModel } from '../models/user.model.js'
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcrypt'
 import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
 import { generateOTP } from '../utils/generateOTP.js';
 import { resetPasswordTemplate } from '../utils/resetPasswordTemplate.js';
@@ -178,7 +178,7 @@ const logoutController = asyncHandler(async (req, res) => {
     return res.status(200)
         .clearCookie("accessToken", cookiesOption)
         .clearCookie("refreshToken", cookiesOption)
-        .json(new ApiResponse(200, {}, "User logged out succcessfully"))
+        .json(new ApiResponse(200, {}, "User logged out successfully."))
 
 }
 )
@@ -192,8 +192,8 @@ const logoutController = asyncHandler(async (req, res) => {
 
         let hashedPassword = ""
         if (password) {
-            const salt = await bcryptjs.genSalt(10)
-            hashedPassword = await bcryptjs.hash(password, salt)
+            const salt = await bcrypt.genSalt(10)
+            hashedPassword = await bcrypt.hash(password, salt)
         }
 
         const updateUser = await UserModel.updateOne({ _id: userId }, {

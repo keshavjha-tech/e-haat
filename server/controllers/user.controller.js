@@ -77,33 +77,26 @@ const registerUserController = asyncHandler(async (req, res) => {
 })
 
 //Email verification controller
- const verifyEmailController = async (req, res) => {
-    try {
+ const verifyEmailController = asyncHandler(async (req, res) => {
         const { code } = req.body;
         const user = await UserModel.findOne({ _id: code });
 
         if (!user) {
-            return res.status(400).json({
-                message: "Invalid Code",
-                error: true,
-                success: false
-            })
+            throw new ApiError(400, 'Invalid verification code.')
         }
 
-        const updateUser = await UserModel.updateOne({ _id: code }, { verify_email: true })
-        return res.status(201).json({
-            message: "email verified successfully",
-            success: true,
-            error: false,
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
+         if (user.verify_email) {
+        return res.status(200).json(
+            new ApiResponse(200, {}, "Email is already verified.")
+        );
     }
-}
+
+     await UserModel.updateOne({ _id: code }, {$set: { verify_email: true }})
+        return res.status(200).json(
+            new ApiResponse(200, {}, "Email veerified successfully.")
+        )
+  
+})
 
 // Login controller 
 
@@ -185,56 +178,43 @@ const logoutController = asyncHandler(async (req, res) => {
 
 // Update user details
 
- const updateUserDetails = async (req, res) => {
-    try {
+ const updateUserDetails = asyncHandler(async (req, res) => {
+    
         const userId = req.user._id
         const { name, email, mobile, password } = req.body
 
-        let hashedPassword = ""
-        if (password) {
-            const salt = await bcrypt.genSalt(10)
-            hashedPassword = await bcrypt.hash(password, salt)
+        const user = await UserModel.findById(userId)
+        if(!user){
+            throw new ApiError(404, "User not found.")
         }
 
-        const updateUser = await UserModel.updateOne({ _id: userId }, {
-            ...(name && { name: name }),
-            ...(email && { email: email }),
-            ...(mobile && { mobile: mobile }),
-            ...(password && { password: hashedPassword }),
-            ...(avatar && { avatar: avatar }),
-        })
+        if(name) user.name = name
+        if(email) user.email= email
+        if(mobile) user.mobile= mobile
 
-        return res.status(200).json({
-            message: "User updated",
-            error: false,
-            success: true,
-            data: updateUser
-        })
+        if (password) {
+            user.password = password
+        }
 
+        const updatedUser = await user.save({ validateBeforeSave: false})
 
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
+        const returnUser = await UserModel.findById(updatedUser._id).select("-password -refreshToken")
+
+        return res.status(200).json(
+            new ApiResponse(200, returnUser, "User updated successfully.")
+        )
+})
 
 // Forgot password
 
- const forgotPasswordController = async (req, res) => {
-    try {
+ const forgotPasswordController = asyncHandler(async (req, res) => {
+    
         const { email } = req.body
 
         const user = await UserModel.findOne({ email })
 
         if (!user) {
-            return res.status(404).json({
-                message: "User not found",
-                error: true,
-                success: false
-            })
+           throw new ApiError(404, "User not found.")
         }
 
         const otp = generateOTP();
@@ -254,62 +234,38 @@ const logoutController = asyncHandler(async (req, res) => {
             })
         })
 
-        return res.json({
-            message: "OTP sent to email",
-            error: false,
-            success: true
-        })
+         return res.status(200).json(
+        new ApiResponse(200, {}, "OTP has been sent to your email address.")
+    )
 
 
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
+  
+})
 
 // verify otp
 
- const verifyOtp = async (req, res) => {
-    try {
+ const verifyOtp = asyncHandler(async (req, res) => {
+   
         const { email, otp } = req.body
 
         if (!(email || otp)) {
-            return res.status(400).json({
-                message: "Provide required fields",
-                error: true,
-                success: false
-            })
+           throw new ApiError(400, "Provide required fields.")
         }
 
         const user = await UserModel.findOne({ email })
 
         if (!user) {
-            return res.status(404).json({
-                message: "User not found",
-                error: true,
-                success: false
-            })
+           throw new ApiError(404, "User not found.")
         }
 
         const currentTime = new Date();
 
         if (user.forget_password_expiry < currentTime) {
-            return res.status(400).json({
-                message: "OTP expires",
-                error: true,
-                success: false
-            })
+           throw new ApiError(400, "OTP expired.")
         }
 
         if (otp !== user.forget_password_otp) {
-            return res.status(400).json({
-                message: "Inavalid OTP",
-                error: true,
-                success: false
-            })
+            throw new ApiError(400, "Invalid OTP.")
         }
 
         const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
@@ -317,21 +273,10 @@ const logoutController = asyncHandler(async (req, res) => {
             forget_password_expiry: ""
         })
 
-        return res.json({
-            message: "OTP verified successfully",
-            error: false,
-            success: true
-        })
-
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
+        return res.status(200).json(
+            new ApiResponse(200, {}, "OTP verified successfully.")
+        )  
+})
 
 // Reset Password
 

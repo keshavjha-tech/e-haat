@@ -52,7 +52,11 @@ function LoginPage() {
       const response = await axiosInstance({
         ...summaryApi.login,
         data: formData,
-      });
+       
+      },
+    {
+      withCredentials: true
+    });
 
       if (response.data.error) {
         toast.error(response.data.message);

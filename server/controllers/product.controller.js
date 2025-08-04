@@ -216,7 +216,7 @@ const getMyProducts = asyncHandler(async (req, res) => {
     const sellerId = req.user?._id
 
     const myProducts = await ProductModel.find({ seller: sellerId })
-        .popolate("category", "name")
+        .populate("category", "name")
         .sort({ createdAt: -1 })
 
     return res.status(200).json(

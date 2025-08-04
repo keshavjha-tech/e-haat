@@ -445,7 +445,7 @@ const logoutController = asyncHandler(async (req, res) => {
 
  const userDetailsController = async (req, res) => {
     try {
-        const userId = req.user._id
+        const userId = req.user?._id
 
         const user = await UserModel.findById(userId).select('-password -refreshToken')
 
@@ -497,7 +497,7 @@ const reportUser = asyncHandler(async(req, res) => {
     const reporterID = req.user._id
     const { reason, details} = req.body
 
-    if(userId === reporterID.toSring()){
+    if(userId === reporterID.toString()){
         throw new ApiError(400, "You cannot report yourself")
     }
 
@@ -507,7 +507,7 @@ const reportUser = asyncHandler(async(req, res) => {
 
     const report = await UserReportModel.create({
         user: userId,
-        reporter: sellerId,
+        reporter: reporterID,
         reason,
         details
     })

@@ -139,8 +139,8 @@ const resolveReport = asyncHandler(async (req, res) => {
         await seller.save({validateBeforeSave: false})
 
         await ProductModel.updateMany(
-            { seller: seller._id},
-            {publish: false}
+            { seller: seller._id },
+            { isPublished: false }
         )
 
         await sendEmail({
@@ -177,7 +177,7 @@ const reactivateSeller = asyncHandler(async(req, res)=>{
 
     await ProductModel.updateMany(
         { seller: sellerId},
-        {Publish: true}
+        {isPublished: true}
     )
 
     await sendEmail({

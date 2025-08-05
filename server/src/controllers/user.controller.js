@@ -77,79 +77,79 @@ const registerUserController = asyncHandler(async (req, res) => {
 })
 
 //Email verification controller
- const verifyEmailController = asyncHandler(async (req, res) => {
-        const { code } = req.body;
-        const user = await UserModel.findOne({ _id: code });
+const verifyEmailController = asyncHandler(async (req, res) => {
+    const { code } = req.body;
+    const user = await UserModel.findOne({ _id: code });
 
-        if (!user) {
-            throw new ApiError(400, 'Invalid verification code.')
-        }
+    if (!user) {
+        throw new ApiError(400, 'Invalid verification code.')
+    }
 
-         if (user.verify_email) {
+    if (user.verify_email) {
         return res.status(200).json(
             new ApiResponse(200, {}, "Email is already verified.")
         );
     }
 
-     await UserModel.updateOne({ _id: code }, {$set: { verify_email: true }})
-        return res.status(200).json(
-            new ApiResponse(200, {}, "Email veerified successfully.")
-        )
-  
+    await UserModel.updateOne({ _id: code }, { $set: { verify_email: true } })
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Email veerified successfully.")
+    )
+
 })
 
 // Login controller 
 
- const loginController = asyncHandler(async (req, res) => {
-   
-        const { email, password } = req.body;
+const loginController = asyncHandler(async (req, res) => {
 
-        if (!(email || password)) {
-            throw new ApiError(400, "All fields are required")
-        }
+    const { email, password } = req.body;
 
-        const user = await UserModel.findOne({ email })
+    if (!(email || password)) {
+        throw new ApiError(400, "All fields are required")
+    }
 
-         console.log("Found User:", user ? "Yes" : "No");
+    const user = await UserModel.findOne({ email })
 
-        if (!user) {
-            throw new ApiError(404, "User does not exist")
-        }
+    console.log("Found User:", user ? "Yes" : "No");
 
-        if (user.status !== "Active") {
-           throw new ApiError(400, "Inactive account.")
-        }
+    if (!user) {
+        throw new ApiError(404, "User does not exist")
+    }
 
-        const isPasswordValid = await user.isPasswordCorrect(password)
+    if (user.status !== "Active") {
+        throw new ApiError(400, "Inactive account.")
+    }
 
-        if (!isPasswordValid) {
-           throw new ApiError(401, "Invalid user credentials || Incorrect Password")
-        }
+    const isPasswordValid = await user.isPasswordCorrect(password)
 
-        // const {accessToken} = await generateAccessToken(user._id);
-        // const refreshToken = await generateRefreshToken(user._id)
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid user credentials || Incorrect Password")
+    }
 
-         const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
+    // const {accessToken} = await generateAccessToken(user._id);
+    // const refreshToken = await generateRefreshToken(user._id)
 
-        const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
-            last_login_date: new Date()
-        })
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
-        const loggedInUser = await UserModel.findById(user._id).select("-password");
+    const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
+        last_login_date: new Date()
+    })
 
-        const cookiesOption = {
-            httpOnly: true,
-            secure: true,
-            sameSite: "None"
-        }
+    const loggedInUser = await UserModel.findById(user._id).select("-password");
 
-        return res.status(200)
+    const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None"
+    }
+
+    return res.status(200)
         .cookie('accessToken', accessToken, cookiesOption)
         .cookie('refreshToken', refreshToken, cookiesOption)
         .json(
             new ApiResponse(200, { user: loggedInUser, accessToken, refreshToken }, "User loggedIn successfully")
         )
- })
+})
 
 // Logout Controller
 const logoutController = asyncHandler(async (req, res) => {
@@ -178,217 +178,193 @@ const logoutController = asyncHandler(async (req, res) => {
 
 // Update user details
 
- const updateUserDetails = asyncHandler(async (req, res) => {
-    
-        const userId = req.user._id
-        const { name, email, mobile, password } = req.body
+const updateUserDetails = asyncHandler(async (req, res) => {
 
-        const user = await UserModel.findById(userId)
-        if(!user){
-            throw new ApiError(404, "User not found.")
-        }
+    const userId = req.user._id
+    const { name, email, mobile, password } = req.body
 
-        if(name) user.name = name
-        if(email) user.email= email
-        if(mobile) user.mobile= mobile
+    const user = await UserModel.findById(userId)
+    if (!user) {
+        throw new ApiError(404, "User not found.")
+    }
 
-        if (password) {
-            user.password = password
-        }
+    if (name) user.name = name
+    if (email) user.email = email
+    if (mobile) user.mobile = mobile
 
-        const updatedUser = await user.save({ validateBeforeSave: false})
+    if (password) {
+        user.password = password
+    }
 
-        const returnUpdatedUser = await UserModel.findById(updatedUser._id).select("-password -refreshToken")
+    const updatedUser = await user.save({ validateBeforeSave: false })
 
-        return res.status(200).json(
-            new ApiResponse(200, returnUpdatedUser, "User updated successfully.")
-        )
+    const returnUpdatedUser = await UserModel.findById(updatedUser._id).select("-password -refreshToken")
+
+    return res.status(200).json(
+        new ApiResponse(200, returnUpdatedUser, "User updated successfully.")
+    )
 })
 
 // Forgot password
 
- const forgotPasswordController = asyncHandler(async (req, res) => {
-    
-        const { email } = req.body
+const forgotPasswordController = asyncHandler(async (req, res) => {
 
-        const user = await UserModel.findOne({ email })
+    const { email } = req.body
 
-        if (!user) {
-           throw new ApiError(404, "User not found.")
-        }
+    const user = await UserModel.findOne({ email })
 
-        const otp = generateOTP();
-        const expireOtp = new Date(Date.now() + 5 * 60 * 1000);
+    if (!user) {
+        throw new ApiError(404, "User not found.")
+    }
 
-        const update = await UserModel.findByIdAndUpdate(user._id, {
-            forget_password_otp: otp,
-            forget_password_expiry: expireOtp
+    const otp = generateOTP();
+    const expireOtp = new Date(Date.now() + 5 * 60 * 1000);
+
+    await UserModel.findByIdAndUpdate(user._id, {
+        forget_password_otp: otp,
+        forget_password_expiry: expireOtp
+    })
+
+    await sendEmail({
+        sendTo: email,
+        subject: "Reset Password",
+        html: resetPasswordTemplate({
+            name: user.name,
+            otp: otp
         })
+    })
 
-        await sendEmail({
-            sendTo: email,
-            subject: "Reset Password",
-            html: resetPasswordTemplate({
-                name: user.name,
-                otp: otp
-            })
-        })
-
-         return res.status(200).json(
+    return res.status(200).json(
         new ApiResponse(200, {}, "OTP has been sent to your email address.")
     )
 
 
-  
+
 })
 
 // verify otp
 
- const verifyOtp = asyncHandler(async (req, res) => {
-   
-        const { email, otp } = req.body
+const verifyOtp = asyncHandler(async (req, res) => {
 
-        if (!(email || otp)) {
-           throw new ApiError(400, "Provide required fields.")
-        }
+    const { email, otp } = req.body
 
-        const user = await UserModel.findOne({ email })
+    if (!(email || otp)) {
+        throw new ApiError(400, "Provide required fields.")
+    }
 
-        if (!user) {
-           throw new ApiError(404, "User not found.")
-        }
+    const user = await UserModel.findOne({ email })
 
-        const currentTime = new Date();
+    if (!user) {
+        throw new ApiError(404, "User not found.")
+    }
 
-        if (user.forget_password_expiry < currentTime) {
-           throw new ApiError(400, "OTP expired.")
-        }
+    const currentTime = new Date();
 
-        if (otp !== user.forget_password_otp) {
-            throw new ApiError(400, "Invalid OTP.")
-        }
+    if (user.forget_password_expiry < currentTime) {
+        throw new ApiError(400, "OTP expired.")
+    }
 
-        const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
-            forget_password_otp: "",
-            forget_password_expiry: ""
-        })
+    if (otp !== user.forget_password_otp) {
+        throw new ApiError(400, "Invalid OTP.")
+    }
 
-        return res.status(200).json(
-            new ApiResponse(200, {}, "OTP verified successfully.")
-        )  
+    await UserModel.findByIdAndUpdate(user?._id, {
+        forget_password_otp: "",
+        forget_password_expiry: ""
+    })
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "OTP verified successfully.")
+    )
 })
 
 // Reset Password
 
- const resetPassword = async (req, res) => {
-    try {
-        const { email, newPassword, confirmPassword } = req.body;
+const resetPassword = asyncHandler(async (req, res) => {
+    const { email, newPassword, confirmPassword } = req.body;
 
-        if (!email?.trim() || !newPassword?.trim() || !confirmPassword?.trim()) {
-            return res.status(400).json({
-                message: "All Fields are required",
-                error: true,
-                success: false
-            })
-        }
+    if (
+        [email, newPassword, confirmPassword].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required.")
+    }
 
-        const user = await UserModel.findOne({ email })
+    if (newPassword !== confirmPassword) {
+        throw new ApiError(400, "New password and confirm password do no match.")
+    }
+
+    const user = await UserModel.findOne({ email })
+    if (!user) {
+        throw new ApiError(404, "User not found.")
+    }
+
+    const isSamePassword = await user.isPasswordCorrect(newPassword)
+    if (isSamePassword) {
+        throw new ApiError(400, "New password cannot be same as old password.")
+    }
+
+    user.password = newPassword;
+    await user.save({ validateBeforeSave: false })
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "Password has been reset successfully.")
+    )
+})
+
+
+//Refresh Access Token
+
+const refreshAccessToken = asyncHandler(async (req, res) => {
+
+    //  console.log("EXECUTING THE NEW 'refreshAccessToken' FUNCTION");
+
+    const incomingRefreshToken = req.cookies?.refreshToken || req.body.refreshToken || req?.headers?.authorization?.split(" ")[1]
+
+    // console.log("incoming token ", incomingRefreshToken)
+
+    if (!incomingRefreshToken) {
+        throw new ApiError(401,"Unauthorized request: No token provided.")
+    }
+
+    
+        const decodedToken = jwt.verify(
+            incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET_KEY
+        );
+
+        // console.log("deoded token", decodedToken)
+
+        const user = await UserModel.findById(decodedToken?._id)
 
         if (!user) {
-            return res.status(400).json({
-                message: "User not found",
-                error: true,
-                success: false
-            })
+            throw new ApiError(401, "Invalid refresh token: User not found.")
         }
 
-        if (newPassword !== confirmPassword) {
-            return res.status(400).json({
-                message: "Both Password must be same",
-                error: true,
-                success: false
-            })
+        if (incomingRefreshToken !== user?.refreshToken) {
+            throw new ApiError(401,"Refresh token is expired or has been used.");
         }
 
-        const salt = await bcryptjs.genSalt(10)
-        const hashedPassword = await bcryptjs.hash(newPassword, salt)
-
-        const updatePassword = await UserModel.findOneAndUpdate({ _id: user._id }, {
-            password: hashedPassword
-        })
-
-        return res.status(200).json({
-            message: "Password Updated Successfully!!",
-            error: false,
-            success: true
-        })
-
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
-
-//Refresh Token
-
- const refreshToken = async (req, res) => {
-    try {
-        const refreshToken = req.cookies.refreshToken || req?.headers?.authorization?.split(" ")[1]
-
-        if (!refreshToken) {
-            return res.status(401).json({
-                message: "No refresh token provided",
-                error: true,
-                success: false
-            })
-        }
-
-        const verifyToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY)
-
-        if (!verifyToken) {
-            return res.status(401).json({
-                message: "Token is invalid or expired",
-                success: false
-            })
-        }
-        // console.log(verifyToken)
-
-        const userId = verifyToken?._id
-
-        const newAccessToken = await generateAccessToken(userId)
-
-        const cookiesOption = {
+        const cookieOptions = {
             httpOnly: true,
             secure: true,
-            sameSite: "None"
+            sameSite: "none",
         }
 
-        res.cookie('accessToken', newAccessToken, cookiesOption)
+        const { accessToken, newRefreshToken } =
+            await generateAccessAndRefreshToken(user._id);
 
-        return res.json({
-            message: "New Access Token Generated",
-            success: true,
-            data: {
-                accessToken: newAccessToken
-            }
-        })
+        // user.refreshToken = newRefreshToken;
+        // await user.save({ validateBeforeSave: false })
 
+         return res
+        .status(200)
+        .cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 5 * 60 * 1000 }) 
+        .cookie("refreshToken", newRefreshToken, { ...cookieOptions, maxAge: 10 * 24 * 60 * 60 * 1000 }) 
+        .json(new ApiResponse(200, { accessToken, refreshToken: newRefreshToken }, "Access token refreshed successfully."));
+})
 
-    } catch (error) {
-        return res.status(500).json({
-            message: error.message || error,
-            error: true,
-            success: false
-        })
-    }
-}
 
 // get logedin user detail
 
- const userDetailsController = async (req, res) => {
+const userDetailsController = async (req, res) => {
     try {
         const userId = req.user?._id
 
@@ -411,7 +387,7 @@ const logoutController = asyncHandler(async (req, res) => {
 
 // apply to be seller
 
- const applyToBeSeller = asyncHandler(async (req, res) => {
+const applyToBeSeller = asyncHandler(async (req, res) => {
 
     const { store_name, store_description } = req.body;
     const userId = req.user?._id;
@@ -439,13 +415,13 @@ const logoutController = asyncHandler(async (req, res) => {
     )
 })
 
-const reportUser = asyncHandler(async(req, res) => {
+const reportUser = asyncHandler(async (req, res) => {
     const { userId } = req.params
     const reporterID = req.user._id
-    const { reason, details} = req.body
+    const { reason, details } = req.body
 
-    if(userId === reporterID.toString()){
-        throw new ApiError(400, "You cannot report yourself")
+    if (userId === reporterID.toString()) {
+        throw new ApiError(403, "You cannot report yourself.")
     }
 
     if (!reason) {
@@ -458,11 +434,11 @@ const reportUser = asyncHandler(async(req, res) => {
         reason,
         details
     })
-      if (!report) {
+    if (!report) {
         throw new ApiError(500, "Failed to submit the report. Please try again.");
     }
 
-    return res.status(200).json(
+    return res.status(201).json(
         new ApiResponse(201, report, "Report user successfully")
     )
 })
@@ -472,7 +448,7 @@ export {
     logoutController,
     applyToBeSeller,
     userDetailsController,
-    refreshToken,
+    refreshAccessToken,
     resetPassword,
     verifyOtp,
     forgotPasswordController,

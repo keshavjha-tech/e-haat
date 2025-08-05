@@ -4,7 +4,7 @@ import {
     forgotPasswordController,
     loginController,
     logoutController,
-    refreshToken,
+    refreshAccessToken,
     registerUserController,
     reportUser,
     resetPassword,
@@ -30,7 +30,7 @@ userRouter.route('/update-user').put(verifyJWT, updateUserDetails)
 userRouter.route('/forgot-password').put(forgotPasswordController)
 userRouter.route('/verify-forgot-password-otp').put(verifyOtp)
 userRouter.route('/reset-password').put(resetPassword)
-userRouter.route('/refresh-token').post(refreshToken);
+userRouter.route('/refresh-token').post(refreshAccessToken);
 userRouter.route('/user-detail').get(verifyJWT, userDetailsController);
 userRouter.route('/apply-seller').put(verifyJWT, applyToBeSeller)
 userRouter.route('/:userId/report').post(verifyJWT, authorizeRole('SELLER'), reportUser)

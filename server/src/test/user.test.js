@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { app } from '../app.js'
 import { UserModel } from '../models/user.model.js';
 import sendEmail from '../config/sendEmail.js';
+import { generateOTP } from '../services/otpService/generateOTP.js';
 
 
 jest.mock('../config/sendEmail.js');
@@ -199,18 +200,191 @@ describe('User API - /api/v1/user', () => {
                 }
 
                 const res = await request(app)
-                .put('/api/v1/user/apply-seller')
-                .set('Authorization', `Bearer ${token}`)
-                .send(storeData)
-                
+                    .put('/api/v1/user/apply-seller')
+                    .set('Authorization', `Bearer ${token}`)
+                    .send(storeData)
+
                 expect(res.statusCode).toBe(400)
                 expect(res.body.success).toBe(false)
 
             })
     })
 
-    describe('', () =>{
+    describe('POST /:userId/report', () => {
+        it('should allow a seller to report a user', async () => {
+            const seller = await UserModel.create({
+                name: "reporting seller",
+                email: "seller@gmail.com",
+                password: "seller@123",
+                role: "SELLER",
+                store_name: "Store247"
+            })
+            const userToReport = await UserModel.create({
+                name: "Buyer",
+                email: "buyer@gmail.com",
+                password: "buyer@123"
+            })
+            const sellerToken = seller.generateAccessToken()
+            const reportData = {
+                reason: "Spamming or harassment",
+                details: "User is spamming"
+            }
 
+            const res = await request(app)
+                .post(`/api/v1/user/${userToReport._id}/report`)
+                .set('Authorization', `Bearer ${sellerToken}`)
+                .send(reportData)
+
+            expect(res.statusCode).toBe(201)
+            expect(res.body.success).toBe(true)
+            expect(res.body.data.reporter).toBe(seller._id.toString())
+            expect(res.body.data.user).toBe(userToReport._id.toString())
+        })
+
+        it('should block a regular user from reporting another user', async () => {
+            const reporter = await UserModel.create({
+                name: "Reporter", email: "reporter@gmail.com", password: "Reporter@123", store_name: "Store247"
+            })
+            const userToReport = await UserModel.create({
+                name: "reported",
+                email: "reported@gmail.com",
+                password: "reported@123"
+            })
+            const reporterToken = reporter.generateAccessToken()
+            const reportData = { reason: "Spamming or harassment" }
+
+            const res = await request(app)
+                .post(`/api/v1/user/${userToReport._id}/report`)
+                .set('Authorization', `Beraer ${reporterToken}`)
+                .send(reportData)
+
+            expect(res.statusCode).toBe(403)
+        })
     })
 
+    describe('PUT /forgot-password and ', () => {
+        it('should generate otp in case of user forgot password', async () => {
+            const user = await UserModel.create({
+                name: "Forgot Password",
+                email: "forgot@gmail.com",
+                password: "forgot@123"
+            })
+
+            const res = await request(app)
+                .put('/api/v1/user/forgot-password')
+                .send({ email: user.email })
+
+            expect(res.statusCode).toBe(200)
+            expect(res.body.success).toBe(true)
+            expect(res.body.message).toBe("OTP has been sent to your email address.")
+
+            const updatedUser = await UserModel.findById(user._id)
+            expect(updatedUser.forget_password_otp).toBeDefined()
+            expect(updatedUser.forget_password_otp).not.toBeNull()
+            expect(updatedUser.forget_password_expiry).toBeDefined()
+        })
+
+        it('should return a 404 error if email does not exist', async () => {
+            const res = await request(app)
+                .put('/api/v1/user/forgot-password')
+                .send({ email: 'notexists@gmail.com' })
+
+            expect(res.statusCode).toBe(404)
+            expect(res.body.success).toBe(false)
+        })
+
+        
+    })
+
+    describe('PUT /verify-forgot-password-otp', () => {
+        it('should verify otp in user forgot password', async () => {
+            const user = await UserModel.create({
+                name: 'Verify otp',
+                email: 'verify@gmail.com',
+                password: 'verify@123',
+                forget_password_otp: '123456',
+                forget_password_expiry: new Date(Date.now() + 10 * 60 * 1000)
+            })
+
+            const res = await request(app)
+                .put('/api/v1/user/verify-forgot-password-otp')
+                .send({ email: user.email, otp:  user.forget_password_otp})
+
+            expect(res.statusCode).toBe(200)
+            expect(res.body.success).toBe(true)
+            expect(res.body.message).toBe("OTP verified successfully.")
+        })
+
+        it('should be able to reset password ', async()=>{
+            const user = await UserModel.create({
+                name: "change password",
+                email: "change@gmail.com",
+                password:"change@123"
+            })
+            const updatedUser = {
+                email : user.email,
+                newPassword : "update@123", 
+                confirmPassword: "update@123"
+            }
+
+            const res = await request(app)
+            .put('/api/v1/user/reset-password')
+            .send( updatedUser)
+
+            expect(res.statusCode).toBe(200)
+            expect(res.body.success).toBe(true)
+            expect(res.body.message).toBe("Password has been reset successfully.")
+        })
+
+        it('should throw error if new and old passwords are same', async()=>{
+            const user = await UserModel.create({
+                name: "change password",
+                email: "change@gmail.com",
+                password:"change@123"
+            })
+            const updatedUser = {
+                email : user.email,
+                newPassword : "change@123", 
+                confirmPassword: "change@123"
+            }
+
+            const res = await request(app)
+            .put('/api/v1/user/reset-password')
+            .send(updatedUser)
+
+            expect(res.statusCode).toBe(400)
+            expect(res.body.success).toBe(false)
+            expect(res.body.message).toBe("New password cannot be same as old password.")
+        })
+    })
+
+    describe('POST /refresh-token', () => {
+
+        it('should refresh access token after its expiry', async() => {
+
+             const userData = { name: 'Refresh User', email: 'refresh@example.com', password: 'password123' };
+            await UserModel.create(userData);
+
+
+            const loginResponse = await request(app)
+            .post('/api/v1/user/login')
+            .send({ email: userData.email, password: userData.password})
+
+            const refreshToken = loginResponse.body.data.refreshToken
+
+            const res = await request(app)
+            .post('/api/v1/user/refresh-token')
+             .send({ refreshToken: refreshToken })
+
+
+            expect(res.statusCode).toBe(200)
+            expect(res.body.success).toBe(true)
+            expect(res.body.data).toHaveProperty('accessToken')
+
+            expect(res.headers['set-cookie']).toBeDefined()
+            expect(res.headers['set-cookie'][0]).toContain('accessToken=')
+        })
+
+        
+    })
 })

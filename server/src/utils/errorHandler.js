@@ -1,6 +1,10 @@
 import { ApiError } from "./ApiError.js";
 
 const errorHandler = (err, req, res, next) => {
+
+    // console.error("ERROR HANDLER CAUGHT:", err);
+
+    
     if (err instanceof ApiError) {
         return res.status(err.statusCode).json({
             success: false,

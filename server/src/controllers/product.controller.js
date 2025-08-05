@@ -3,7 +3,7 @@ import { UserModel } from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
-import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../config/cloudinary.js";
 import mongoose from "mongoose";
 
 const createProduct = asyncHandler(async (req, res) => {

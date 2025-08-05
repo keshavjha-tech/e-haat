@@ -2,7 +2,7 @@ import { CategoryModel } from "../models/category.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
-import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js";
+import { deleteFromCloudinary, uploadOnCloudinary } from "../config/cloudinary.js";
 
 const createCategory = asyncHandler(async (req, res) => {
     const { name } = req.body

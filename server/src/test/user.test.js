@@ -63,7 +63,7 @@ describe('User API - /api/v1/user', () => {
         })
     })
 
-    describe('POST /login', () => {
+    describe('POST /login and GET /logout', () => {
         it('login in existing user and return token with 200 statuscode.', async () => {
             await UserModel.create(
                 {
@@ -123,6 +123,94 @@ describe('User API - /api/v1/user', () => {
         })
     })
 
-    
+    describe('GET /user-detail and PUT /update-user', () => {
+        it('should ge user details from an authenticated user', async () => {
+            const user = await UserModel.create({
+                name: "User Deatil",
+                email: "detail@gmail.com",
+                password: "detail@123"
+            })
+            const token = user.generateAccessToken();
+            const res = await request(app).get('/api/v1/user/user-detail').set('Authorization', `Bearer ${token}`)
+
+            expect(res.statusCode).toBe(200)
+            expect(res.body.data.email).toBe('detail@gmail.com')
+        })
+
+        it('should update user details for an authenticated user', async () => {
+            const user = await UserModel.create({
+                name: "User update",
+                email: "update@gmail.com",
+                password: "update@123"
+            })
+            const token = user.generateAccessToken();
+            const updates = {
+                name: 'updated name',
+                mobile: '1234567890'
+            }
+
+            const res = await request(app)
+                .put('/api/v1/user/update-user')
+                .set('Authorization', `Bearer ${token}`)
+                .send(updates)
+
+            expect(res.statusCode).toBe(200)
+            const updatedUser = await UserModel.findById(user._id)
+            expect(updatedUser.name).toBe('updated name')
+        })
+    })
+
+    describe('PUT /apply-seller', () => {
+        it('should apply a regular user to apply to become a seller', async () => {
+            const user = await UserModel.create({
+                name: "Seller Applicant",
+                email: "applicant@gmail.com",
+                password: "applicant@gmail.com"
+            })
+            const token = user.generateAccessToken()
+            const storeData = {
+                store_name: "My Awesome Store",
+                store_description: "selling amazing products."
+            }
+
+            const res = await request(app)
+                .put('/api/v1/user/apply-seller')
+                .set('Authorization', `Bearer ${token}`)
+                .send(storeData)
+
+            expect(res.statusCode).toBe(200)
+            const applicant = await UserModel.findById(user._id)
+            expect(applicant.sellerStatus).toBe('Waiting Approval')
+            expect(applicant.store_name).toBe("My Awesome Store")
+        })
+
+        it('should fail if user already applied',
+            async () => {
+                const user = await UserModel.create({
+                    name: "Seller Applicant",
+                    email: "applicant@gmail.com",
+                    password: "applicant@gmail.com",
+                    sellerStatus: 'Waiting Approval',
+                })
+                const token = user.generateAccessToken()
+                const storeData = {
+                    store_name: "My Awesome Store",
+                    store_description: "selling amazing products."
+                }
+
+                const res = await request(app)
+                .put('/api/v1/user/apply-seller')
+                .set('Authorization', `Bearer ${token}`)
+                .send(storeData)
+                
+                expect(res.statusCode).toBe(400)
+                expect(res.body.success).toBe(false)
+
+            })
+    })
+
+    describe('', () =>{
+
+    })
 
 })

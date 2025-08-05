@@ -78,7 +78,8 @@ const userSchema = new mongoose.Schema({
 
     store_name: {
         type: String,
-        default: null
+        default: null,
+        unique: true
     },
     store_description: {
         type: String,

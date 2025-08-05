@@ -15,7 +15,6 @@ import {
 }
     from '../controllers/user.controller.js'
 import { verifyJWT } from '../middleware/auth.middleware.js';
-import {upload} from '../middleware/multer.middleware.js';
 import { authorizeRole } from '../middleware/roles.middleware.js';
 
 

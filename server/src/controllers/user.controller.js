@@ -1,9 +1,9 @@
 import sendEmail from '../config/sendEmail.js';
 import { UserModel } from '../models/user.model.js'
 import bcrypt from 'bcrypt'
-import { verifyEmailTemplate } from '../utils/verifyEmailTemplate.js';
-import { generateOTP } from '../utils/generateOTP.js';
-import { resetPasswordTemplate } from '../utils/resetPasswordTemplate.js';
+import { verifyEmailTemplate } from '../services/email.service/verifyEmailTemplate.js';
+import { generateOTP } from '../services/otpService/generateOTP.js';
+import { resetPasswordTemplate } from '../services/email.service/resetPasswordTemplate.js';
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import { ApiError } from "../utils/ApiError.js"
@@ -198,10 +198,10 @@ const logoutController = asyncHandler(async (req, res) => {
 
         const updatedUser = await user.save({ validateBeforeSave: false})
 
-        const returnUser = await UserModel.findById(updatedUser._id).select("-password -refreshToken")
+        const returnUpdatedUser = await UserModel.findById(updatedUser._id).select("-password -refreshToken")
 
         return res.status(200).json(
-            new ApiResponse(200, returnUser, "User updated successfully.")
+            new ApiResponse(200, returnUpdatedUser, "User updated successfully.")
         )
 })
 
@@ -417,7 +417,7 @@ const logoutController = asyncHandler(async (req, res) => {
     const userId = req.user?._id;
 
     //validate input
-    if (!(store_name || store_description)) {
+    if (!store_name || !store_description) {
         throw new ApiError(400, "Store name and description are required")
     }
 
@@ -434,7 +434,9 @@ const logoutController = asyncHandler(async (req, res) => {
 
     await user.save({ validateBeforeSave: false })
 
-    return res.status(200, user, "Your seller application have been submitted")
+    return res.status(200).json(
+        new ApiResponse(200, user, "Your seller application have been submitted")
+    )
 })
 
 const reportUser = asyncHandler(async(req, res) => {

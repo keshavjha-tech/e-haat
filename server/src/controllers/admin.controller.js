@@ -2,13 +2,13 @@ import { UserModel } from '../models/user.model.js'
 import { asyncHandler } from '../utils/asyncHandler.js'
 import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
-import { sellerApprovedTemplate } from '../utils/sellerApprovedTemplate.js';
-import { sellerRejectedTemplate } from '../utils/sellerRejectedTemplate.js';
+import { sellerApprovedTemplate } from '../services/email.service/sellerApprovedTemplate.js';
+import { sellerRejectedTemplate } from '../services/email.service/sellerRejectedTemplate.js';
 import { SellerReportModel } from '../models/sellerReport.model.js';
 import { ProductModel } from '../models/product.model.js';
 import { UserReportModel } from '../models/userReport.model.js';
-import { accountSuspendedTemplate } from '../utils/accountSuspendedTemplate.js';
-import { accountReactivatedTemplate } from '../utils/accountReactivatedTemplate.js';
+import { accountSuspendedTemplate } from '../services/email.service/accountSuspendedTemplate.js';
+import { accountReactivatedTemplate } from '../services/email.service/accountReactivatedTemplate.js';
 
 // user who applied to be a seller
 

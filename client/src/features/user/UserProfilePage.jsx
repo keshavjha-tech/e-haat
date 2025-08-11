@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { FaRegUserCircle } from "react-icons/fa";
-import UserProfileAvatar from '../components/UserProfileAvatar';
+import UserProfileAvatar from './components/UserProfileAvatar';
 
 
 function UserProfilePage() {

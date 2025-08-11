@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import SearchBar from "./SearchBar";
+import SearchBar from "../SearchBar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaAngleUp, FaUserCircle } from "react-icons/fa";
 import { BsCart3 } from "react-icons/bs";
 import { LuCircleUserRound } from "react-icons/lu";
-import useMobile from "../hooks/useMobile";
+import useMobile from "../../hooks/useMobile";
 import { useSelector } from "react-redux"
 import { FaAngleDown } from "react-icons/fa";
-import UserMenu from "./UserMenu";
+import UserMenu from "../UserMenu";
 
-function Navbar() {
+function Header() {
   const [isMobile] = useMobile();
   const location = useLocation();
   const isSearchPage = location.pathname === "/search";
@@ -119,4 +119,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Header;

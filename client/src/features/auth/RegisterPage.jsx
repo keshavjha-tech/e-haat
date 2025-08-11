@@ -3,7 +3,7 @@ import { HiEye, HiEyeOff } from "react-icons/hi";
 import {Link, NavLink, useNavigate} from "react-router-dom"
 import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
-import summaryApi from "../utils/summaryApi";
+import summaryApi from "../../api/summaryApi";
 import AxiosToastError from "../utils/AxiosToastError";
 
 function RegisterPage() {

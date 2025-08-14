@@ -7,7 +7,7 @@ import { LuCircleUserRound } from "react-icons/lu";
 import useMobile from "../../hooks/useMobile";
 import { useSelector } from "react-redux"
 import { FaAngleDown } from "react-icons/fa";
-import UserMenu from "../UserMenu";
+import UserMenu from "../../features/user/components/UserMenu";
 
 function Header() {
   const [isMobile] = useMobile();

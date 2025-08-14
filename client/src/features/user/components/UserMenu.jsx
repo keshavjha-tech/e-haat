@@ -6,11 +6,11 @@ import { IoMdNotificationsOutline } from "react-icons/io"
 import { PiPackage } from "react-icons/pi";
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from '../../../api/axiosInstance';
 import summaryApi from '../../../api/summaryApi';
 import { logout } from '../../../store/userSlice';
 import toast from 'react-hot-toast';
-import AxiosToastError from '../utils/AxiosToastError';
+import AxiosToastError from '../../../api/AxiosToastError';
 
 
 

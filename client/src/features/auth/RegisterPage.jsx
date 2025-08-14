@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import {Link, NavLink, useNavigate} from "react-router-dom"
 import toast from "react-hot-toast";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../api/axiosInstance";
 import summaryApi from "../../api/summaryApi";
-import AxiosToastError from "../utils/AxiosToastError";
+import AxiosToastError from "../../api/AxiosToastError";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({

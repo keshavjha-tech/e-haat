@@ -1,6 +1,6 @@
-import Layout from './components/Layout'
+import Layout from './components/layout/Layout'
 import toast, { Toaster } from 'react-hot-toast';
-import fetchUserDeatil from './utils/fetchUserDetail';
+import fetchUserDeatil from './api/fetchUserDetail';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUser } from './store/userSlice';

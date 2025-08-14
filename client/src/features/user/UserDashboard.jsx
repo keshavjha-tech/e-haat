@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import UserDashboardMenu from './components/UserDashboardMenu'
 
 const UserDashboard = () => {
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state?.user)
 
   console.log("user dashboard",user)
   // console.trace()

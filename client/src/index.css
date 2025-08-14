@@ -1,19 +1,27 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Jockey+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jockey+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-body {
-  @apply bg-blue-50;
-}
+@import "tailwindcss";
+
+
+
+
 
 @theme {
-  --font-jockey: "Jockey One";
-
-
+  
   --color-light-gray: #F5F5F5;
   --color-Sapphire-Blue: #102C57;
   --color-linen: #F8F0E5;
   --color-sand: #DAC0A3;
   --color-charcol-navy: #172337;
+  --color-vibrant-orange: #F97316;
+  --color-background: #EFF6FF;
+
+   --font-sans: "Inter", sans-serif;
+  --font-heading: "Poppins", sans-serif;
+  --font-brand: "Jockey One", sans-serif;
+  
 
   --animate-fadeInSlideDown: fadeInSlideDown 0.3s ease-out;
 
@@ -27,7 +35,30 @@ body {
       transform: translateY(0);
     }
   }
-
 }
 
+body {
+ background-color: theme(--color-background);
+ font-family: theme(--font-sans);
+}
 
+:root {
+  --background: 226 100% 97%;   /* blue-50 */
+  --foreground: 221 44% 15%;    /* text-primary */
+ 
+  --card: 0 0% 100%;             /* surface (White) */
+  --card-foreground: 221 44% 15%;
+
+  --primary: 218 70% 20%;       /* primary */
+  --primary-foreground: 0 0% 100%;
+
+  --accent: 25 95% 53%;         /* accent */
+  --accent-foreground: 0 0% 100%;
+  
+  --border: 215 20% 91%;        /* border (slate-200) */
+  --input: 215 20% 91%;         /* border (slate-200) */
+  --ring: 25 95% 53%;           /* accent */
+  
+  --destructive: 0 84% 60%;
+  --radius: 0.5rem;
+}

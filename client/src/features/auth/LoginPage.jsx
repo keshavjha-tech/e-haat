@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../api/axiosInstance";
 import summaryApi from "../../api/summaryApi";
-import AxiosToastError from "../utils/AxiosToastError";
-import fetchUserDeatil from "../utils/fetchUserDetail";
+import AxiosToastError from "../../api/AxiosToastError";
+import fetchUserDeatil from "../../api/fetchUserDetail";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/userSlice";
 
@@ -49,7 +49,7 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await axiosInstance({
+      const res = await axiosInstance({
         ...summaryApi.login,
         data: formData,
        
@@ -58,18 +58,17 @@ function LoginPage() {
       withCredentials: true
     });
 
-      if (response.data.error) {
-        toast.error(response.data.message);
+      if (res.data.error) {
+        toast.error(res.data.message);
       }
 
-      if (response.data.success) {
-        toast.success(response.data.message);
-        localStorage.setItem('accessToken', response.data.data.accessToken)
-        localStorage.setItem('refreshToken', response.data.data.refreshToken)
+      if (res.data.success) {
+        toast.success(res.data.message);
+        
 
        const userData = await fetchUserDeatil();
        dispatch(setUser(userData))
-       console.log('from login', userData)
+      //  console.log('from login', userData)
         setFormData({
           email: "",
           password: "",

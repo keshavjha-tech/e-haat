@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../../api/axiosInstance";
 import summaryApi from "../../api/summaryApi";
-import AxiosToastError from "../utils/AxiosToastError";
+import AxiosToastError from "../../api/AxiosToastError";
 
 function ForgotPasswordPage() {
   const [formData, setFormData] = useState({email: ""});

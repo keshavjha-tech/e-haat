@@ -1,5 +1,5 @@
 import React from 'react'
-import UserMenu from '../../components/UserMenu'
+import UserMenu from './components/UserMenu'
 import { FaArrowLeft } from "react-icons/fa";
 
 function UserMenuMobilePage() {

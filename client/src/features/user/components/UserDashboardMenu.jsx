@@ -7,16 +7,16 @@ import { GiPowerButton } from "react-icons/gi";
 import { PiPackage } from "react-icons/pi";
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../utils/axiosInstance';
+import axiosInstance from '../../../api/axiosInstance';
 import summaryApi from '../../../api/summaryApi';
 import { logout } from '../../../store/userSlice';
 import toast from 'react-hot-toast';
-import AxiosToastError from '../utils/AxiosToastError';
+import AxiosToastError from '../../../api/AxiosToastError';
 
 
 
 function UserDashboardMenu() {
-    const { user } = useSelector((state) => state.user)
+    const {user } = useSelector((state) => state?.user)
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
@@ -41,27 +41,15 @@ function UserDashboardMenu() {
     }
     return (
         <div className='w-full'>
-            <div className='font-semibold'>Account</div>
-            <div className='flex flex-col gap-3 mt-3 w-full px-2'>
-
-
-                <Link to={"/dashboard/profile"} className='flex gap-2 w-full text-sm hover:bg-gray-100'>
-                    <LuCircleUserRound className='size-5' />
-                    My Profile
-                </Link>
-                <Link to={'/order'} className='flex gap-2 text-sm hover:bg-slate-100'>
-                    < PiPackage className='size-5' />Orders
-                </Link>
-                <Link to={'/dashboard/wishlist'} className='flex gap-2 text-sm hover:bg-slate-100'>
-                    <CiHeart className='size-5' />Wishlist
-                </Link>
-                <Link to={'/dashboard/notification'} className='flex gap-3 text-sm hover:bg-slate-100'>
-                    <IoMdNotificationsOutline className='size-5' />Notification
-                </Link>
-                <button onClick={logoutHandler} className='flex gap-2 text-sm hover:bg-slate-100'>
-                    <GiPowerButton className='size-5' />Logout
-                </button>
+            <div>
+                <div></div>
+                <div>
+                    <p>Hello</p>
+                    <h3>{user.user.name}</h3>
+                </div>
             </div>
+            <div></div>
+            <div></div>
         </div>
     )
 }

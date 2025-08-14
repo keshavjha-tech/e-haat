@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import summaryApi from "../../api/summaryApi";
-import AxiosToastError from "../utils/AxiosToastError";
-import axiosInstance from "../utils/axiosInstance";
+import AxiosToastError from "../../api/AxiosToastError";
+import axiosInstance from "../../api/axiosInstance";
 import toast from "react-hot-toast";
 
 

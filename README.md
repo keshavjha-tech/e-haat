@@ -67,7 +67,7 @@ Follow these steps to set up the project locally:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/keshavjha205/e-haat.git
+   git clone https://github.com/keshavjha-tech/e-haat.git
    ```
 
 2. **Navigate to the backend folder:**
@@ -106,9 +106,9 @@ Follow these steps to set up the project locally:
 ##  Contact
 
 **Keshav Jha**
- [keshavjha1081@gmail.com](mailto:keshavjha1081@gmail.com)
+ [keshavjha.tech@gmail.com](mailto:keshavjha.tech@gmail.com)
 
- Project Repository: [github.com/keshavjha205/e-haat](https://github.com/keshavjha205/e-haat)
+ Project Repository: [github.com/keshavjha-tech/e-haat](https://github.com/keshavjha-tech/e-haat)
 
 ---
 

@@ -11,32 +11,51 @@ import UserMenuMobilePage from '../features/user/UserMenuMobilePage.jsx'
 import UserDashboard from '../features/user/UserDashboard.jsx'
 import UserProfilePage from '../features/user/UserProfilePage.jsx'
 import WishlistPage from '../features/user/WishlistPage.jsx'
+import ProtectedRoute from './ProtectedRoute.jsx'
+import Notification from '../pages/Notification.jsx'
+import OrdersPage from '@/features/user/OrdersPage.jsx'
 
 
 
 const router = createBrowserRouter([
     {
-        path : "/",
-        element : <App />,
-        children : [
-            { path : '', element : <Home />},
-            { path : "register", element : <RegisterPage /> },
-            { path : "login", element : <LoginPage />},
-            { path : "search", element : <SearchPage /> },
-            { path : "forgot-password", element : <ForgotPasswordPage /> },
-            { path : "forgot-password", element : <ForgotPasswordPage /> },
-            { path : "otp-verification", element : <OtpVerificationPage /> },
-            { path : "reset-password", element : <ResetPasswordPage /> },
-            { path : "user-menu", element : <UserMenuMobilePage /> },
-            { 
-                path : "dashboard",
-                element: <UserDashboard />,
+        path: "/",
+        element: <App />,
+        children: [
+            { path: '', element: <Home /> },
+            { path: "register", element: <RegisterPage /> },
+            { path: "login", element: <LoginPage /> },
+            { path: "search", element: <SearchPage /> },
+            { path: "forgot-password", element: <ForgotPasswordPage /> },
+            { path: "forgot-password", element: <ForgotPasswordPage /> },
+            { path: "otp-verification", element: <OtpVerificationPage /> },
+            { path: "reset-password", element: <ResetPasswordPage /> },
+            {
+                path: "user-menu",
+                element: <ProtectedRoute />,
+                children: [{ path: '', element: <UserMenuMobilePage /> }]
+            },
+            {
+                path: "orders",
+                element: <ProtectedRoute />,
+                children: [{ path: '', element: <OrdersPage /> }]
+            },
+
+            {
+                element: <ProtectedRoute />,
                 children: [
-                    {path : "profile", element : <UserProfilePage /> },
-                    {path : "wishlist", element : <WishlistPage /> },
-                    {path : "notifications"},
+                    {
+                        path: "dashboard",
+                        element: <UserDashboard />,
+                        children: [
+                            { path: "profile", element: <UserProfilePage /> },
+                            { path: "wishlist", element: <WishlistPage /> },
+                            { path: "notifications", element: <Notification /> },
+                        ]
+                    }
                 ]
             }
+
         ]
     }
 ])

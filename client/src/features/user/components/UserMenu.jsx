@@ -54,7 +54,7 @@ function UserMenu() {
                 <Link to={'/dashboard/wishlist'} className='flex gap-2 text-sm hover:bg-slate-100'>
                     <CiHeart className='size-5' />Wishlist
                 </Link>
-                <Link to={'/dashboard/notification'} className='flex gap-3 text-sm hover:bg-slate-100'>
+                <Link to={'/dashboard/notifications'} className='flex gap-3 text-sm hover:bg-slate-100'>
                     <IoMdNotificationsOutline className='size-5' />Notification
                 </Link>
                 <button onClick={logoutHandler} className='flex gap-2 text-sm hover:bg-slate-100'>

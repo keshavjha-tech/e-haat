@@ -36,7 +36,10 @@ const summaryApi = {
     logout: {
         url : '/api/v1/user/logout',
         method: 'get'
-    }
+    },
+    update: {
+        url: '/api/v1/user/update-user',
+        method: 'put'
+    },
 }
-
 export default summaryApi

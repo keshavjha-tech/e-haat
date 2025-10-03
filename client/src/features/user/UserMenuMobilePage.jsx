@@ -1,15 +1,22 @@
 import React from 'react'
 import UserMenu from './components/UserMenu'
 import { FaArrowLeft } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import UserDashboardMenu from './components/UserDashboardMenu';
 
 function UserMenuMobilePage() {
   return (
-    <section className='bg-white h-full w-full flex items-center justify-center'>
-      <button onClick={()=>window.history.back()} className='m-4 my-3 py-4'><FaArrowLeft/></button>
-        <div className='container mx-auto p-3 flex items-center justify-center mt-28'>
-            <UserMenu />
-        </div>
-    </section>
+    <div className='bg-white h-screen'>
+      <div className='p-4 border-b flex items-center gap-4'>
+        <Link to={"/"}>
+        <FaArrowLeft />
+        </Link>
+        <h1 className='font-bold text-lg'>My Account</h1>
+      </div>
+      <div className='p-2'>
+        <UserDashboardMenu />
+      </div>
+    </div>
   )
 }
 

@@ -193,7 +193,7 @@ function RegisterPage() {
             Create Account
           </button>
         </form>
-        <p className="text-linen mt-2 mb-10 mx-30">
+        <p className="text-linen mt-2 mb-10 mx-25">
           Already have an account? <NavLink to={"/login"}>
           <span className="text-sand font-bold underline">Login</span></NavLink>
         </p>

@@ -42,7 +42,7 @@ const addAddress = asyncHandler(async (req, res) => {
 
 const getMyAddresses = asyncHandler(async (req, res) => {
     const userId = req.user?._id
-    const addresses = await AddressModel.find({ user: userId }).sort({ isDefault: -1, createdAte: -1 })
+    const addresses = await AddressModel.find({ user: userId }).sort({ isDefault: -1, createdAt: -1 })
 
     return res.status(200).json(
         new ApiResponse(200, addresses, "Addresses fetched successfully.")

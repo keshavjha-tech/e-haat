@@ -13,7 +13,7 @@ const subCategorySchema = new Schema({
     },
     parentCategories: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category', 
+        ref: 'category', 
         required: true
     }],
      slug: {

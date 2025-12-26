@@ -37,16 +37,20 @@ const createOrder = asyncHandler(async (req, res) => {
             throw new ApiError(400, `${product.name} is out of stock.`)
         }
 
+        const itemPrice = product.discount > 0
+            ? product.price - (product.price * product.discount / 100)
+            : product.price;
+
         orderItems.push({
             product: product._id,
             name: product.name,
-            quantity: product.quantity,
-            price: product.price,
+            quantity: item.quantity,
+            price: itemPrice,
             image: product.images[0]?.url || "",
             seller: product.seller
         })
 
-        itemsPrice += product.price * item.quantity
+        itemsPrice += itemPrice * item.quantity
     }
 
     const shippingPrice = itemsPrice > 499 ? 0 : 50

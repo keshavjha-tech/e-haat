@@ -9,7 +9,7 @@ const addItemToCart = asyncHandler(async (req, res) => {
     const { productId, quantity = 1 } = req.body
     const userId = req.user?._id
 
-    if (!productId || !mongoose.Types.ObjectId(productId)) {
+    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
         throw new ApiError(400, "A valid Product id required.")
     }
 
@@ -118,9 +118,37 @@ const updateCartItemQuantity = asyncHandler(async (req, res) => {
     }
 
     cart.items[itemIndex].quantity = parseInt(quantity, 10)
+    await cart.save()
+
+    const populatedCart = await cart.populate({
+        path: 'items.product',
+        select: 'name images price stock'
+    })
+
+    const subtotal = populatedCart.items.reduce((acc, item) => {
+        if (item.product) {
+            return acc + (item.product.price * item.quantity)
+        }
+        return acc;
+    }, 0)
+
+    const discount = 0;
+    const shipping = 0;
+    const total = subtotal - discount + shipping;
+
+    const cartResponse = {
+        _id: populatedCart._id,
+        user: populatedCart.user,
+        items: populatedCart.items,
+        summary: {
+            subtotal: subtotal.toFixed(2),
+            discount: discount.toFixed(2),
+            total: total.toFixed(2),
+        }
+    }
 
     return res.status(200).json(
-       new ApiResponse (200, cart, "Cart quantity updated successfully.")
+       new ApiResponse (200, cartResponse, "Cart quantity updated successfully.")
     )
 })
 

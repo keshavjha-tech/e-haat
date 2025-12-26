@@ -11,9 +11,17 @@ import UserMenuMobilePage from '../features/user/UserMenuMobilePage.jsx'
 import UserDashboard from '../features/user/UserDashboard.jsx'
 import UserProfilePage from '../features/user/UserProfilePage.jsx'
 import WishlistPage from '../features/user/WishlistPage.jsx'
+import ManageAddressesPage from '../features/user/ManageAddressesPage.jsx'
 import ProtectedRoute from './ProtectedRoute.jsx'
+import GuestRoute from './GuestRoute.jsx'
 import Notification from '../pages/Notification.jsx'
 import OrdersPage from '@/features/user/OrdersPage.jsx'
+import ProductDetailPage from '../pages/ProductDetailPage.jsx'
+import CartPage from '../pages/CartPage.jsx'
+import CheckoutPage from '../pages/CheckoutPage.jsx'
+import ContactPage from '../pages/ContactPage.jsx'
+import SupportPage from '../pages/SupportPage.jsx'
+import AboutPage from '../pages/AboutPage.jsx'
 
 
 
@@ -23,13 +31,23 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: '', element: <Home /> },
-            { path: "register", element: <RegisterPage /> },
-            { path: "login", element: <LoginPage /> },
+            { path: "product/:productId", element: <ProductDetailPage /> },
+            { path: "cart", element: <CartPage /> },
+            { path: "checkout", element: <CheckoutPage /> },
+            { path: "contact", element: <ContactPage /> },
+            { path: "support", element: <SupportPage /> },
+            { path: "about", element: <AboutPage /> },
             { path: "search", element: <SearchPage /> },
-            { path: "forgot-password", element: <ForgotPasswordPage /> },
-            { path: "forgot-password", element: <ForgotPasswordPage /> },
-            { path: "otp-verification", element: <OtpVerificationPage /> },
-            { path: "reset-password", element: <ResetPasswordPage /> },
+            {
+                element: <GuestRoute />,
+                children: [
+                    { path: "register", element: <RegisterPage /> },
+                    { path: "login", element: <LoginPage /> },
+                    { path: "forgot-password", element: <ForgotPasswordPage /> },
+                    { path: "otp-verification", element: <OtpVerificationPage /> },
+                    { path: "reset-password", element: <ResetPasswordPage /> },
+                ]
+            },
             {
                 path: "user-menu",
                 element: <ProtectedRoute />,
@@ -50,6 +68,7 @@ const router = createBrowserRouter([
                         children: [
                             { path: "profile", element: <UserProfilePage /> },
                             { path: "wishlist", element: <WishlistPage /> },
+                            { path: "addresses", element: <ManageAddressesPage /> },
                             { path: "notifications", element: <Notification /> },
                         ]
                     }

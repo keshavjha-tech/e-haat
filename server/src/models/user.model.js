@@ -78,8 +78,8 @@ const userSchema = new mongoose.Schema({
 
     store_name: {
         type: String,
-        default: null,
-        unique: true
+        // No default - field will only exist when user becomes a seller
+        // unique and sparse are defined in the index below, not here
     },
     store_description: {
         type: String,
@@ -102,6 +102,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Product'
     }],
+    wishlist: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Product'
+    }],
      reportCount: {
         type: Number,
         default: 0
@@ -109,7 +113,8 @@ const userSchema = new mongoose.Schema({
     
 }, { timestamps: true })
 
-
+// Define sparse unique index - this allows multiple null values
+userSchema.index({ store_name: 1 }, { unique: true, sparse: true });
 
 userSchema.pre("save", async function (next) {
     if(!this.isModified("password")) return next();

@@ -362,7 +362,7 @@ describe('User API - /api/v1/user', () => {
 
         it('should refresh access token after its expiry', async() => {
 
-             const userData = { name: 'Refresh User', email: 'refresh@example.com', password: 'password123' };
+            const userData = { name: 'Refresh User', email: 'refresh@example.com', password: 'password123' };
             await UserModel.create(userData);
 
 
@@ -374,7 +374,7 @@ describe('User API - /api/v1/user', () => {
 
             const res = await request(app)
             .post('/api/v1/user/refresh-token')
-             .send({ refreshToken: refreshToken })
+            .send({ refreshToken: refreshToken })
 
 
             expect(res.statusCode).toBe(200)

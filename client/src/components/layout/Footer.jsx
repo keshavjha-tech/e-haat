@@ -1,59 +1,109 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 function Footer() {
   return (
-    <footer className="border-t py-10 bg-charcol-navy text-linen">
+    <footer className="border-t py-10 bg-gray-900 text-gray-100">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Logo & Info */}
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-sand">e-haat</h1>
-            <p className=" text-sm">Copyright © 2025 </p>
-            <p className=" text-sm">E-Haat Group </p>
-            <p className=" text-sm">Created by Keshav Jha</p>
-          </div>
-
-          {/* Product */}
-          <div className="space-y-2">
-            <h3 className="font-semibold uppercase text-sm">Product</h3>
-            <ul className="space-y-1 ">
-              <li><a href="#" className="hover:underline">Feature 1</a></li>
-              <li><a href="#" className="hover:underline">Feature 2</a></li>
-            </ul>
+          <div className="space-y-3">
+            <Link to="/" className="inline-block">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent">
+                eHaat
+              </h1>
+            </Link>
+            <p className="text-sm text-gray-400">
+              Your trusted online marketplace for quality products at great prices.
+            </p>
+            <div className="text-xs text-gray-500 space-y-1">
+              <p>Copyright © 2025</p>
+              <p>E-Haat Group</p>
+              <p>Created by Keshav Jha</p>
+            </div>
           </div>
 
           {/* Company */}
-          <div className="space-y-2">
-            <h3 className="font-semibold uppercase  text-sm">Company</h3>
-            <ul className="space-y-1 ">
-              <li><a href="#" className="hover:underline">About</a></li>
-              <li><a href="#" className="hover:underline">Careers</a></li>
+          <div className="space-y-3">
+            <h3 className="font-semibold uppercase text-sm text-gray-300">Company</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/about" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  About Us
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Help */}
-          <div className="space-y-2">
-            <h3 className="font-semibold uppercase  text-sm">Help</h3>
-            <ul className="space-y-1 ">
-              <li><a href="#" className="hover:underline">Contact</a></li>
-              <li><a href="#" className="hover:underline">Support</a></li>
+          <div className="space-y-3">
+            <h3 className="font-semibold uppercase text-sm text-gray-300">Help & Support</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/contact" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link to="/support" className="text-gray-400 hover:text-blue-400 transition-colors">
+                  Support
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Social */}
-          <div className="space-y-2">
-            <h3 className="font-semibold uppercase  text-sm">Social</h3>
-            <div className="flex flex-col gap-2 ">
-              <a href="#" className="flex items-center gap-2 hover:text-blue-600"><FaFacebook /> Facebook</a>
-              <a href="#" className="flex items-center gap-2 hover:text-blue-400"><FaTwitter /> Twitter</a>
-              <a href="#" className="flex items-center gap-2 hover:text-gray-900"><FaGithub /> Github</a>
-              <a href="#" className="flex items-center gap-2 hover:text-pink-500"><FaInstagram /> Instagram</a>
-              <a href="#" className="flex items-center gap-2 hover:text-blue-700"><FaLinkedin /> LinkedIn</a>
+          <div className="space-y-3">
+            <h3 className="font-semibold uppercase text-sm text-gray-300">Follow Us</h3>
+            <div className="flex flex-col gap-2">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-blue-500 transition-colors"
+              >
+                <FaFacebook /> Facebook
+              </a>
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors"
+              >
+                <FaTwitter /> Twitter
+              </a>
+              <a 
+                href="https://github.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-gray-300 transition-colors"
+              >
+                <FaGithub /> Github
+              </a>
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-pink-500 transition-colors"
+              >
+                <FaInstagram /> Instagram
+              </a>
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-blue-600 transition-colors"
+              >
+                <FaLinkedin /> LinkedIn
+              </a>
             </div>
           </div>
+        </div>
 
+        {/* Bottom Bar */}
+        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+          <p>All rights reserved. Made with ❤️ for our customers.</p>
         </div>
       </div>
     </footer>

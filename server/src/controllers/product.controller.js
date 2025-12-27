@@ -175,17 +175,27 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const query = { isPublished: true }
 
     if (category) {
-        query.category = category
+        // Validate if category is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(category)) {
+            query.category = category
+        } else {
+            throw new ApiError(400, "Invalid category ID format.")
+        }
     }
     if (subCategory) {
-        query.subCategories = subCategory
+        // Validate if subCategory is a valid ObjectId
+        if (mongoose.Types.ObjectId.isValid(subCategory)) {
+            query.subCategories = subCategory
+        } else {
+            throw new ApiError(400, "Invalid subCategory ID format.")
+        }
     }
 
     const sortOptions = {}
     sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1
 
     // --- Pagination ----
-    const skip = (page - 1) * limit
+    const skip = (parseInt(page) - 1) * parseInt(limit)
 
     // ---Query execution ---
     const products = await ProductModel.find(query)
@@ -198,10 +208,10 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const totalProducts = await ProductModel.countDocuments(query)
 
     const responsePayload = {
-        products,
+        products: products || [],
         pagination: {
             totalProducts,
-            totalPage: Math.ceil(totalProducts / limit),
+            totalPage: Math.ceil(totalProducts / parseInt(limit)),
             currentPage: parseInt(page)
         }
     }

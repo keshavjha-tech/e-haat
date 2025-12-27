@@ -8,7 +8,7 @@ try {
     // console.log(" Access Token Received:", token);
 
     if(!token){
-       throw new ApiError(401, "Unauthorizes Request")
+       throw new ApiError(401, "Unauthorized Request")
     }
 
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)

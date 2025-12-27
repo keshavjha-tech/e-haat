@@ -6,7 +6,7 @@ import { TypeAnimation } from "react-type-animation";
 import "../index.css";
 import useMobile from "../hooks/useMobile";
 
-function SearchBar() {
+function SearchBar({ searchQuery, onSearchChange, onSearchSubmit }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSearchPage, setIsSearchPage] = useState(false);
@@ -21,7 +21,11 @@ function SearchBar() {
     navigate("/search");
   };
 
-  // console.log("search", isSearchPage);
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && onSearchSubmit) {
+      onSearchSubmit(e.target.value);
+    }
+  };
 
   return (
     <div className="w-full min-w-[300px] lg:min-w-3xl  rounded-lg overflow-hidden flex items-center lg:h-full h-10 bg-slate-100 text-neutral-500 ">
@@ -41,7 +45,6 @@ function SearchBar() {
         <div onClick={redirectToSearchPage} className="w-full h-full mt-3 sm:mt-0">
           <TypeAnimation
             sequence={[
-              // Same substring at the start will only be typed out once, initially
               'Search for "Products"',
               1000,
               'Search for "Brands"',
@@ -63,7 +66,10 @@ function SearchBar() {
             type="text"
             placeholder="Search for Product, Brands and More"
             autoFocus={true}
-            className="w-full outline-none border-gray-300 text-neutral-800"
+            value={searchQuery || ''}
+            onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="w-full outline-none border-gray-300 text-neutral-800 bg-transparent px-2"
           />
         </div>
       )}

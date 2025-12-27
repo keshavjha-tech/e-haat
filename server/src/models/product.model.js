@@ -31,12 +31,12 @@ const productSchema = new mongoose.Schema({
     // --- Categorization ---
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
+        ref: 'category',
         required: true
     },
     subCategories: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'SubCategory'
+        ref: 'subCategory'
     }],
 
 

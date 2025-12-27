@@ -43,8 +43,11 @@ const registerUserController = asyncHandler(async (req, res) => {
         throw new ApiError(409, "User alredy existed")
     }
 
+    // Create user - store_name will default to null, which is now allowed with sparse index
     const user = await UserModel.create({
-        name, email, password
+        name, 
+        email, 
+        password
     })
 
     const createdUser = await UserModel.findById(user._id).select("-password")

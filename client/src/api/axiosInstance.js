@@ -63,7 +63,6 @@ const axiosInstance = axios.create({
 
 //     console.log("accessToken", accessToken);
 
-
 //     localStorage.setItem('accessToken', accessToken)
 //     return accessToken
 //   } catch (error) {
@@ -76,43 +75,41 @@ const axiosInstance = axios.create({
 //   }
 // };
 
-
-
 //This is new and cleaner method
 
 const refreshInstance = axios.create({
   baseURL,
   withCredentials: true,
-})
+});
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    return response
+    return response;
   },
 
   async (error) => {
     const originalRequest = error.config;
 
-    if(!error.response){
-      return Promise.reject(error)
+    if (!error.response) {
+      return Promise.reject(error);
     }
 
     if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-    
-    try {
-      //make refresh token req. browswe automayically send HttpOnly refresgtoken cookie
+      originalRequest._retry = true;
 
-      await refreshInstance.post(summaryApi.refreshToken.url)
+      try {
+        //make refresh token req. browser automatically send HttpOnly refresh token cookie
 
-      return axiosInstance(originalRequest)
-    } catch (refreshError) {
-      console.error("Session expires. Please login again.");
-      return Promise.reject(refreshError)     
+        await refreshInstance.post(summaryApi.refreshToken.url);
+
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        console.error("Session expires. Please login again.");
+        return Promise.reject(refreshError);
+      }
     }
-  }
-  return Promise.reject(error)
-  }
-)
+    return Promise.reject(error);
+  },
+);
 
 export default axiosInstance;

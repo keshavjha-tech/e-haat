@@ -1,17 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Navigate, Outlet } from 'react-router-dom'
+import React from "react";
+import { useSelector } from "react-redux";
+import { Navigate, Outlet } from "react-router-dom";
 
 function GuestRoute() {
-    const user = useSelector(state => state.user)
-    
-    // If user is logged in (has user data with _id), redirect to home
-    if (user?.user?._id) {
-        return <Navigate to="/" replace />
-    }
+  const userData = useSelector((state) => state.user?.user);
 
-    return <Outlet />
+  // If user is logged in (has user data with _id), redirect to home
+  if (userData?._id) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 }
 
-export default GuestRoute
-
+export default GuestRoute;

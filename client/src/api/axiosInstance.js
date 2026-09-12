@@ -94,17 +94,26 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    // List of auth URLs that should never trigger token refresh on 401
+    const isAuthRoute = [
+      summaryApi.login?.url,
+      summaryApi.register?.url,
+      summaryApi.refreshToken?.url,
+      summaryApi.forgot_password?.url,
+      summaryApi.otp_verification?.url,
+      summaryApi.reset_password?.url,
+    ].some((url) => url && originalRequest.url?.includes(url));
+
+    if (error.response.status === 401 && !originalRequest._retry && !isAuthRoute) {
       originalRequest._retry = true;
 
       try {
         //make refresh token req. browser automatically send HttpOnly refresh token cookie
-
         await refreshInstance.post(summaryApi.refreshToken.url);
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        console.error("Session expires. Please login again.");
+        console.error("Session expired. Please login again.");
         return Promise.reject(refreshError);
       }
     }

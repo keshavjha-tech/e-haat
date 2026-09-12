@@ -13,11 +13,26 @@ app.use(morgan('dev'))
 app.use(helmet({
     crossOriginResourcePolicy: false
 }))
+const allowedOrigins = process.env.FRONTEND_URL
+    ? process.env.FRONTEND_URL.split(',').map(url => url.trim().replace(/\/$/, ""))
+    : ["http://localhost:5173", "http://localhost:3000"];
+
 app.use(cors({
     credentials: true,
-    origin: process.env.FRONTEND_URL
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const cleanOrigin = origin.replace(/\/$/, "");
+        if (allowedOrigins.includes(cleanOrigin) || allowedOrigins.includes("*")) {
+            return callback(null, true);
+        }
+        return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
 }))
-console.log("Allowed CORS Origin:", process.env.FRONTEND_URL);
+console.log("Allowed CORS Origins:", allowedOrigins);
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 
 

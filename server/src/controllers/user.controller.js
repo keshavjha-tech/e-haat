@@ -140,10 +140,11 @@ const loginController = asyncHandler(async (req, res) => {
 
     const loggedInUser = await UserModel.findById(user._id).select("-password");
 
+    const isProduction = process.env.NODE_ENV === "production";
     const cookiesOption = {
         httpOnly: true,
-        secure: true,
-        sameSite: "None"
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax"
     }
 
     return res.status(200)
@@ -165,10 +166,11 @@ const logoutController = asyncHandler(async (req, res) => {
         new: true
     });
 
+    const isProduction = process.env.NODE_ENV === "production";
     const cookiesOption = {
         httpOnly: true,
-        secure: true,
-        sameSite: "None"
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax"
     }
 
     return res.status(200)
@@ -345,23 +347,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             throw new ApiError(401,"Refresh token is expired or has been used.");
         }
 
+        const isProduction = process.env.NODE_ENV === "production";
         const cookieOptions = {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "Lax",
         }
 
-        const { accessToken, newRefreshToken } =
+        const { accessToken, refreshToken } =
             await generateAccessAndRefreshToken(user._id);
-
-        // user.refreshToken = newRefreshToken;
-        // await user.save({ validateBeforeSave: false })
 
          return res
         .status(200)
         .cookie("accessToken", accessToken, { ...cookieOptions, maxAge: 5 * 60 * 1000 }) 
-        .cookie("refreshToken", newRefreshToken, { ...cookieOptions, maxAge: 10 * 24 * 60 * 60 * 1000 }) 
-        .json(new ApiResponse(200, { accessToken, refreshToken: newRefreshToken }, "Access token refreshed successfully."));
+        .cookie("refreshToken", refreshToken, { ...cookieOptions, maxAge: 10 * 24 * 60 * 60 * 1000 })
+        .json(new ApiResponse(200, { accessToken, refreshToken }, "Access token refreshed successfully."));
 })
 
 
